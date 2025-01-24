@@ -51,7 +51,7 @@
 		</button>
 	</div>
 
-	<a href="/all" class="text-sky-600 hover:underline font-sans">
+	<a href="/overview" class="text-sky-600 hover:underline font-sans">
 		See all maps in this collection
 	</a>
 </div>
