@@ -1,0 +1,11 @@
+prefix dc: <http://purl.org/dc/elements/1.1/>
+prefix sem: <http://semanticweb.cs.vu.nl/2009/11/sem/>
+SELECT DISTINCT ?map ?title ?date WHERE {
+  ?map dc:type ?type ;
+       dc:title ?title .
+  
+  OPTIONAL { ?map sem:hasBeginTimeStamp ?date . }
+
+  FILTER(?type IN ("Electronic maps", "cartografische afbeelding", "map", <http://vocab.getty.edu/aat/30002809>))
+
+}
