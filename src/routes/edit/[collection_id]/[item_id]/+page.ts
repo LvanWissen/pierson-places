@@ -1,43 +1,26 @@
 export const ssr = false;
 
-import type { PageLoad } from "./$types";
+import type { PageLoad } from './$types';
+import { metaDataSchema } from './schema';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 
-interface MapData {
-    id: number;
-    metadata: MetaData;
-    iiifInfoUrl: string;
-    partOf: number;
-    isGeoreferenced: number;
-    isValidated: number;
-    canvasId: string;
-    manifestId: string;
-    isNotAMap: number;
-}
 
-interface MetaData {
-    title: string;
-    description: string;
-    date: string;
-    creator: string;
-    subject: string;
-    type: string;
-    format: string;
-    identifier: string;
-    source: string;
-}
+
 
 export const load: PageLoad = async ({ params }) => {
+	const { item_id } = params;
 
-    const { item_id } = params;
+	const res = await fetch(`https://lvanwissen-piersonplaces.web.val.run/item/${item_id}`);
 
-    const res = await fetch(`https://lvanwissen-piersonplaces.web.val.run/item/${item_id}`);
+	const data: MapData = await res.json();
 
-    const data: MapData = await res.json();
+	console.log(data);
 
-    console.log(data);
-
-    return data
-
-   
+	return {
+		form: await superValidate(data.metadata, zod(metaDataSchema)),
+		map: data,
+	};
 };
+

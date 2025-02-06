@@ -41,7 +41,10 @@
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
+		"formsnap": "^2.0.0",
 		"openseadragon": "^5.0.1",
-		"svelte-infinite-loading": "^1.4.0"
+		"svelte-infinite-loading": "^1.4.0",
+		"sveltekit-superforms": "^2.23.1",
+		"zod": "^3.24.1"
 	}
 }

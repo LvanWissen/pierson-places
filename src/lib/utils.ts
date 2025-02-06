@@ -1,26 +1,4 @@
-interface MapData {
-	id: number;
-	metadata: MetaData;
-	iiifInfoUrl: string;
-	partOf: number;
-	isGeoreferenced: number;
-	isValidated: number;
-	canvasId: string;
-	manifestId: string;
-	isNotAMap: number;
-}
-
-interface MetaData {
-	title: string;
-	description: string;
-	date: string;
-	creator: string;
-	subject: string;
-	type: string;
-	format: string;
-	identifier: string;
-	source: string;
-}
+import type { MapData, MetaData } from '$lib/types';
 
 export const loadData = async (
 	offset = 0,
@@ -37,4 +15,23 @@ export const loadData = async (
 	console.log(data);
 
 	return { items: data.data, offset, limit, total: data.total };
+};
+
+export const updateData = async (id: number, data: MetaData) => {
+	const res = await fetch(`https://lvanwissen-piersonplaces.web.val.run/item/${id}/metadata`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	});
+
+	console.log(res);
+
+	if (!res.ok) {
+		throw new Error('Failed to update data');
+	} else {
+		// succes
+		return { success: true };
+	}
 };

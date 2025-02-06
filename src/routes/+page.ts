@@ -1,28 +1,6 @@
 import type { PageLoad } from './$types';
+import type { MapData, MetaData } from '$lib/types';
 
-interface MapData {
-	id: number;
-	metadata: MetaData;
-	iiifInfoUrl: string;
-	partOf: number;
-	isGeoreferenced: number;
-	isValidated: number;
-	canvasId: string;
-	manifestId: string;
-	isNotAMap: number;
-}
-
-interface MetaData {
-	title: string;
-	description: string;
-	date: string;
-	creator: string;
-	subject: string;
-	type: string;
-	format: string;
-	identifier: string;
-	source: string;
-}
 
 const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
 	try {
