@@ -8,6 +8,7 @@
 	import { invalidateAll } from '$app/navigation';
 
 	$: collectionId = data.partOf;
+	$: manifestId = data.manifestId;
 	$: itemId = data.id;
 	$: iiifInfoUrl = data.iiifInfoUrl;
 	$: title = data.metadata?.title || 'Untitled Map';
@@ -40,7 +41,7 @@
 </script>
 
 <div class="flex flex-col items-center p-6 space-y-6 bg-gray-50 min-h-screen justify-center">
-	<Image {collectionId} {itemId} {iiifInfoUrl} {title} {date} {isGeoreferenced} />
+	<Image {manifestId} {collectionId} {itemId} {iiifInfoUrl} {title} {date} {isGeoreferenced} />
 
 	<div class="flex space-x-4">
 		<button

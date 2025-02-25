@@ -8,7 +8,7 @@
 	};
 
 	const handleLink = (): void => {
-		// Handle the "Link" action
+		navigator.clipboard.writeText(manifestId);
 	};
 
 	const handleNext = (): void => {
@@ -24,6 +24,7 @@
 
 	export let collectionId: number;
 	export let itemId: number;
+	export let manifestId: string;
 
 	export let isGeoreferenced: number = 0;
 

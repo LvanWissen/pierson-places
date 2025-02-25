@@ -55,9 +55,10 @@
 		{#each images as image}
 			<div class="w-full">
 				<Image
+					manifestId={image.manifestId}
 					iiifInfoUrl={image.iiifInfoUrl}
-					title={image.metadata.title}
-					date={image.metadata.date}
+					title={image.metadata.name}
+					date={image.metadata.publication.startDate}
 					displayLinks={false}
 					collectionId={image.partOf}
 					itemId={image.id}

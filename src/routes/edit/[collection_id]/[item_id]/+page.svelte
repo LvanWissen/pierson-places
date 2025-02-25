@@ -51,51 +51,6 @@
 			<div class="pt-8 pl-8 p-4 flex-grow">
 				<h2 class="text-xl font-semibold text-gray-800">Edit</h2>
 
-				<Field {form} name="@context">
-					<Control>
-						{#snippet children({ props })}
-							<Label>Context</Label>
-							<input
-								{...props}
-								type="text"
-								bind:value={$formData['@context']}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
-							/>
-						{/snippet}
-					</Control>
-					<FieldErrors />
-				</Field>
-
-				<Field {form} name="@id">
-					<Control>
-						{#snippet children({ props })}
-							<Label>ID</Label>
-							<input
-								{...props}
-								type="text"
-								bind:value={$formData['@id']}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
-							/>
-						{/snippet}
-					</Control>
-					<FieldErrors />
-				</Field>
-
-				<Field {form} name="@type">
-					<Control>
-						{#snippet children({ props })}
-							<Label>Type</Label>
-							<input
-								{...props}
-								type="text"
-								bind:value={$formData['@type']}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
-							/>
-						{/snippet}
-					</Control>
-					<FieldErrors />
-				</Field>
-
 				<Field {form} name="name">
 					<Control>
 						{#snippet children({ props })}
