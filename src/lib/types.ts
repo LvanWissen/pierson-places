@@ -23,3 +23,9 @@ export type MetaData = {
     },
     isPartOf: string;
 }
+
+export type Statistics = {
+    total: number;
+    georeferenced: number;
+    remaining: number;
+}

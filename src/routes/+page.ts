@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
-import type { MapData, MetaData } from '$lib/types';
+import type { MapData, Statistics } from '$lib/types';
 
 
 const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
@@ -40,14 +40,20 @@ const checkAllmaps = async ({ itemId, iiifInfoUrl }: { itemId: number, iiifInfoU
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('https://lvanwissen-piersonplaces.web.val.run/');
+	const resStatistics = await fetch('https://lvanwissen-piersonplaces.web.val.run/statistics');
 
-	const data: MapData = await res.json();
+	const mapData: MapData = await res.json();
+	const statistics: Statistics = await resStatistics.json();
 
 	console.log('Updating from page.ts');
 
-    if (data.isGeoreferenced == 0) {
-	    data.isGeoreferenced = await checkAllmaps({ itemId: data.id, iiifInfoUrl: data.iiifInfoUrl });
+    if (mapData.isGeoreferenced == 0) {
+	    mapData.isGeoreferenced = await checkAllmaps({ itemId: mapData.id, iiifInfoUrl: mapData.iiifInfoUrl });
     }
 
-	return data;
-};
+	// Directly return the map data properties at the top level, with statistics as a separate property
+	return {
+		...mapData,
+		statistics
+	}
+}

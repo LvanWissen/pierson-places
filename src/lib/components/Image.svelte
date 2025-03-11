@@ -9,6 +9,12 @@
 
 	const handleLink = (): void => {
 		navigator.clipboard.writeText(manifestId);
+
+		// Show popup and hide after timeout
+		showCopiedPopup = true;
+		setTimeout(() => {
+			showCopiedPopup = false;
+		}, 2000);
 	};
 
 	const handleNext = (): void => {
@@ -30,6 +36,9 @@
 
 	let imageLoading: boolean = true;
 	export let iiifInfoUrl: string;
+
+	// Add state for popup visibility
+	let showCopiedPopup: boolean = false;
 
 	$: thumbnailUrl = iiifInfoUrl.endsWith('info.json')
 		? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
@@ -78,12 +87,23 @@
 					Edit
 				</button>
 
-				<button
-					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
-					onclick={handleLink}
-				>
-					<Link size="20" class="text-orange" />
-				</button>
+				<div class="relative">
+					<button
+						class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
+						onclick={handleLink}
+						title="Copy Manifest URI"
+					>
+						<Link size="20" class="text-orange" />
+					</button>
+
+					{#if showCopiedPopup}
+						<div
+							class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded shadow-md z-50"
+						>
+							Copied!
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 		{#if displayLinks}
