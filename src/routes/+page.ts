@@ -23,7 +23,15 @@ const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
 	}
 };
 
-const checkAllmaps = async ({ itemId, iiifInfoUrl }: { itemId: number, iiifInfoUrl: string }) => {
+const checkAllmaps = async ({ 
+    fetch,
+    itemId, 
+    iiifInfoUrl
+}: { 
+    fetch: (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>,
+    itemId: number, 
+    iiifInfoUrl: string
+}) => {
 	const res = await fetch(`https://annotations.allmaps.org/?url=${iiifInfoUrl}`);
 	const data = await res.json();
 
@@ -48,7 +56,11 @@ export const load: PageLoad = async ({ fetch }) => {
 	console.log('Updating from page.ts');
 
     if (mapData.isGeoreferenced == 0) {
-	    mapData.isGeoreferenced = await checkAllmaps({ itemId: mapData.id, iiifInfoUrl: mapData.iiifInfoUrl });
+	    mapData.isGeoreferenced = await checkAllmaps({ 
+            fetch,
+            itemId: mapData.id, 
+            iiifInfoUrl: mapData.iiifInfoUrl
+        });
     }
 
 	// Directly return the map data properties at the top level, with statistics as a separate property

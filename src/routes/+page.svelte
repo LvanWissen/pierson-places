@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	export let data;
 
 	console.log('Updating page.svelte');
@@ -20,6 +20,7 @@
 
 	const handleNotMap = async () => {
 		try {
+			iiifInfoUrl = '';
 			const response = await fetch(
 				`https://lvanwissen-piersonplaces.web.val.run/item/${itemId}/not-a-map`,
 				{

@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { Link, LoaderCircle, MapPinned, SkipForward } from 'lucide-svelte';
+	import { browser } from '$app/environment';
 
 	const handleEdit = (): void => {
 		window.location.href = `/edit/${collectionId}/${itemId}`;
@@ -47,6 +48,16 @@
 	export let title: string = 'Unknown';
 	export let date: string = 'Unknown';
 	export let displayLinks: boolean = true;
+
+	$: {
+		if (iiifInfoUrl === '') {
+			imageLoading = true;
+		} else {
+			if (browser) {
+				loadImage();
+			}
+		}
+	}
 
 	const loadImage = (): void => {
 		const image = new Image();
