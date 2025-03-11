@@ -7,6 +7,7 @@
 
 	let filter = 'all';
 	let georeferencedFilter: number | null = null;
+	let resetCounter = 0;
 
 	let offset = 0;
 	export let data;
@@ -64,7 +65,8 @@
 		// Reset and reload data
 		offset = -10;
 		images = [];
-		handleScroll({ detail: { loaded: () => {}, complete: () => {} } });
+
+		resetCounter += 1;
 	};
 </script>
 
@@ -111,4 +113,7 @@
 		{/each}
 	</div>
 </div>
-<InfiniteLoading on:infinite={handleScroll} spinner="spiral" />
+
+{#key resetCounter}
+	<InfiniteLoading on:infinite={handleScroll} spinner="spiral" />
+{/key}
