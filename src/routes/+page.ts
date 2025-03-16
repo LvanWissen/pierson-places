@@ -1,46 +1,8 @@
 import type { PageLoad } from './$types';
 import type { MapData, Statistics } from '$lib/types';
+import { checkAllmaps } from '$lib/utils';
 
-const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
-	try {
-		const response = await fetch(
-			`https://lvanwissen-piersonplaces.web.val.run/item/${itemId}/georeferenced`,
-			{
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}
-		);
 
-		if (!response.ok) {
-			throw new Error('Failed to update georeferenced status');
-		}
-	} catch (error) {
-		console.error(error);
-	}
-};
-
-const checkAllmaps = async ({
-	fetch,
-	itemId,
-	iiifInfoUrl
-}: {
-	fetch: (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
-	itemId: number;
-	iiifInfoUrl: string;
-}) => {
-	const res = await fetch(`https://annotations.allmaps.org/?url=${iiifInfoUrl}`);
-	const data = await res.json();
-
-	// if error key is present, the map is not georeferenced
-	if (data.error) {
-		return 0;
-	} else {
-		handleGeoreferenced({ itemId });
-		return 1;
-	}
-};
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('https://lvanwissen-piersonplaces.web.val.run/');
