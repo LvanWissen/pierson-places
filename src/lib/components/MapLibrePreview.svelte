@@ -12,6 +12,40 @@
 	let mapContainer: HTMLDivElement;
 	let map: maplibregl.Map;
 
+	type Point = [number, number];
+
+	const interpolateCoords = (points: Point[], interpolationDistance: number): Point[] => {
+		if (points.length < 2) return points;
+
+		const result: Point[] = [points[0]];
+
+		for (let i = 1; i < points.length; i++) {
+			const [prevX, prevY] = points[i - 1];
+			const [currentX, currentY] = points[i];
+
+			const dx = currentX - prevX;
+			const dy = currentY - prevY;
+			const distance = Math.sqrt(dx * dx + dy * dy);
+
+			if (distance <= interpolationDistance) {
+				result.push([currentX, currentY]);
+				continue;
+			}
+
+			const numPoints = Math.floor(distance / interpolationDistance);
+			const stepX = dx / (numPoints + 1);
+			const stepY = dy / (numPoints + 1);
+
+			for (let j = 1; j <= numPoints; j++) {
+				result.push([prevX + stepX * j, prevY + stepY * j]);
+			}
+
+			result.push([currentX, currentY]);
+		}
+
+		return result;
+	};
+
 	const getGeoJson = async (annotationPageUrl: string) => {
 		const annotationPage = await fetch(annotationPageUrl).then((res) => res.json());
 
@@ -27,7 +61,10 @@
 				.split(' ')
 				.map((coord: string) => coord.split(',').map((i: string) => +i));
 
-			const polygon = transformer.transformForwardAsGeojson([coords]);
+			// If we're using a thin plate spline, it's nicer to interpolate the points
+			const interpolatedCoords = interpolateCoords(coords, 100); // 100 pixels
+
+			const polygon = transformer.transformForwardAsGeojson([interpolatedCoords]);
 			features.push({
 				type: 'Feature',
 				properties: {},
