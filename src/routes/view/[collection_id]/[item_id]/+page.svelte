@@ -20,7 +20,7 @@
 	});
 
 	const iiifId = map.iiifInfoUrl.split('/info.json')[0];
-	const annotationUrl = `https://annotations.allmaps.org/?url=${iiifId}`;
+	const annotationPageUrl = `https://annotations.allmaps.org/?url=${iiifId}`;
 
 	const handleGeoreference = () => {
 		const allmapsUrl =
@@ -38,7 +38,7 @@
 
 <div class="w-full flex flex-col md:flex-row min-h-screen">
 	<!-- Metadata section - Full width on small screens -->
-	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0 md:mr-4">
+	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0">
 		<div class="pt-8 pl-8 pr-8 flex items-center justify-between">
 			<h2 class="text-xl font-semibold text-gray-800">Details</h2>
 			<ViewToggle bind:viewMode isGeoreferenced={map.isGeoreferenced} />
@@ -49,6 +49,7 @@
 			isGeoreferenced={map.isGeoreferenced}
 			onGeoreference={handleGeoreference}
 			onEdit={handleEdit}
+			{annotationPageUrl}
 		/>
 	</div>
 
@@ -57,7 +58,7 @@
 		{#if viewMode === 'image' || map.isGeoreferenced === 0}
 			<OSD iiifInfoUrl={map.iiifInfoUrl} />
 		{:else if map.isGeoreferenced === 1 && viewMode === 'map'}
-			<MapLibre {annotationUrl} />
+			<MapLibre {annotationPageUrl} />
 		{/if}
 	</div>
 </div>

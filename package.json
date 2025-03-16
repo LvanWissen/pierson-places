@@ -41,7 +41,9 @@
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
+		"@allmaps/annotation": "^1.0.0-beta.30",
 		"@allmaps/maplibre": "^1.0.0-beta.30",
+		"@allmaps/transform": "^1.0.0-beta.41",
 		"formsnap": "^2.0.0",
 		"maplibre-gl": "^5.2.0",
 		"openseadragon": "^5.0.1",

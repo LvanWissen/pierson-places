@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MapLibrePreview from './MapLibrePreview.svelte';
 	import { MapPinned, Edit } from 'lucide-svelte';
 
 	export let metadata: {
@@ -15,6 +16,7 @@
 	export let isGeoreferenced: number;
 	export let onGeoreference: () => void;
 	export let onEdit: () => void;
+	export let annotationPageUrl: string;
 </script>
 
 <div class="pt-8 pl-8 pr-8 p-4 flex-grow flex flex-col justify-between">
@@ -48,6 +50,11 @@
 			<h3 class="font-medium text-sm text-gray-700">Collection</h3>
 			<p class="mt-1 text-gray-900">{metadata.isPartOf}</p>
 		</div>
+
+		{#if isGeoreferenced === 1}
+			<div class="border-t border-gray-200 my-8"></div>
+			<MapLibrePreview {annotationPageUrl} />
+		{/if}
 	</div>
 
 	<div class="mb-4 mt-4 flex gap-2">

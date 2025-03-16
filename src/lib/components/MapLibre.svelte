@@ -4,7 +4,7 @@
 	import { WarpedMapLayer } from '@allmaps/maplibre';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 
-	export let annotationUrl: string;
+	export let annotationPageUrl: string;
 
 	let mapContainer: HTMLDivElement;
 
@@ -16,17 +16,14 @@
 			center: [0, 0],
 			zoom: 2,
 			// Pitch is currently not supported by the Allmaps plugin for MapLibre
-			maxPitch: 0,
-			// This is needed to improve rendering
-			// Future versions of the plugin might not need this
-			preserveDrawingBuffer: true
+			maxPitch: 0
 		});
 
 		const warpedMapLayer = new WarpedMapLayer();
 
 		map.on('load', () => {
 			map.addLayer(warpedMapLayer);
-			warpedMapLayer.addGeoreferenceAnnotationByUrl(annotationUrl);
+			warpedMapLayer.addGeoreferenceAnnotationByUrl(annotationPageUrl);
 		});
 
 		map.on('warpedmapadded', (event) => {
@@ -34,7 +31,8 @@
 
 			if (bbox) {
 				map.fitBounds(bbox, {
-					padding: 50
+					padding: 50,
+					speed: 1.8
 				});
 			}
 		});
