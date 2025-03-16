@@ -33,8 +33,6 @@ const checkAllmaps = async ({
 	const res = await fetch(`https://annotations.allmaps.org/?url=${iiifInfoUrl}`);
 	const data = await res.json();
 
-	console.log(data);
-
 	// if error key is present, the map is not georeferenced
 	if (data.error) {
 		return 0;

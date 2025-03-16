@@ -6,7 +6,6 @@
 	import { Field, Control, Label, Description, FieldErrors } from 'formsnap';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { metaDataSchema } from './schema';
-	import SuperDebug from 'sveltekit-superforms';
 
 	export let data;
 
@@ -43,9 +42,9 @@
 	});
 </script>
 
-<div class="w-full flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-4 min-h-screen">
-	<!-- Sidebar with metadata -->
-	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between">
+<div class="w-full flex flex-col md:flex-row min-h-screen">
+	<!-- Sidebar with metadata - Full width on small screens -->
+	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0">
 		<!-- Metadata -->
 		<form method="POST" use:enhance>
 			<div class="pt-8 pl-8 p-4 flex-grow">
@@ -155,9 +154,9 @@
 			</div>
 		</form>
 	</div>
-	<div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5">
-		<!-- OSD viewer -->
+
+	<!-- OSD viewer - Explicit height on small screens -->
+	<div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5 h-[50vh] md:h-screen">
 		<div bind:this={container} class="h-full w-full bg-gray-100"></div>
 	</div>
 </div>
-<SuperDebug data={$formData} />

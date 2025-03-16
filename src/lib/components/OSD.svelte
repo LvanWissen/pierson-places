@@ -31,4 +31,4 @@
 	});
 </script>
 
-<div bind:this={container} class="h-full w-full bg-gray-100"></div>
+<div bind:this={container} class="w-full md:bg-gray-100 h-full min-h-full"></div>

@@ -12,10 +12,5 @@ export const load: PageLoad = async ({ params }) => {
 
 	const data: MapData = await res.json();
 
-	console.log(data);
-
-	return {
-		form: await superValidate(data.metadata, zod(metaDataSchema)),
-		map: data
-	};
+	return { form: await superValidate(data.metadata, zod(metaDataSchema)), map: data };
 };

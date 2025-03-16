@@ -12,21 +12,15 @@ export const loadData = async (
 
 	const data: { total: number; data: MapData[] } = await res.json();
 
-	console.log(data);
-
 	return { items: data.data, offset, limit, total: data.total };
 };
 
 export const updateData = async (id: number, data: MetaData) => {
 	const res = await fetch(`https://lvanwissen-piersonplaces.web.val.run/item/${id}/metadata`, {
 		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json'
-		},
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(data)
 	});
-
-	console.log(res);
 
 	if (!res.ok) {
 		throw new Error('Failed to update data');

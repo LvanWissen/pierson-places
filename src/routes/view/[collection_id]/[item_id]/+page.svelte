@@ -32,12 +32,13 @@
 	};
 
 	const handleEdit = () => {
-		goto(`/edit/${data.map.collection_id}/${data.map.id}`);
+		goto(`/edit/${data.map.partOf}/${data.map.id}`);
 	};
 </script>
 
-<div class="w-full flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-4 min-h-screen">
-	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between">
+<div class="w-full flex flex-col md:flex-row min-h-screen">
+	<!-- Metadata section - Full width on small screens -->
+	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0 md:mr-4">
 		<div class="pt-8 pl-8 pr-8 flex items-center justify-between">
 			<h2 class="text-xl font-semibold text-gray-800">Details</h2>
 			<ViewToggle bind:viewMode isGeoreferenced={map.isGeoreferenced} />
@@ -51,7 +52,8 @@
 		/>
 	</div>
 
-	<div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5 relative">
+	<!-- Image/Map section - Set explicit height on small screens -->
+	<div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5 relative h-[50vh] md:h-screen">
 		{#if viewMode === 'image' || map.isGeoreferenced === 0}
 			<OSD iiifInfoUrl={map.iiifInfoUrl} />
 		{:else if map.isGeoreferenced === 1 && viewMode === 'map'}

@@ -1,8 +1,6 @@
 <script lang="ts">
 	export let data;
 
-	console.log('Updating page.svelte');
-
 	import { CircleAlert } from 'lucide-svelte';
 	import Image from '$lib/components/Image.svelte';
 	import { invalidateAll } from '$app/navigation';

@@ -93,7 +93,7 @@
 					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-2"
 					onclick={handleView}
 				>
-					Edit
+					View
 				</button>
 
 				<div class="relative">
