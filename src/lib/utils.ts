@@ -30,7 +30,13 @@ export const updateData = async (id: number, data: MetaData) => {
 	}
 };
 
-const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
+const handleGeoreferenced = async ({
+	fetch,
+	itemId
+}: {
+	fetch: (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
+	itemId: number;
+}) => {
 	try {
 		const response = await fetch(
 			`https://lvanwissen-piersonplaces.web.val.run/item/${itemId}/georeferenced`,
@@ -66,7 +72,7 @@ export const checkAllmaps = async ({
 	if (data.error) {
 		return 0;
 	} else {
-		handleGeoreferenced({ itemId });
+		handleGeoreferenced({ fetch, itemId });
 		return 1;
 	}
 };
