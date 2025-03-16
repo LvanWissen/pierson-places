@@ -10,7 +10,7 @@ export const loadData = async (
 		`https://lvanwissen-piersonplaces.web.val.run/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&orderBy=${orderBy}`
 	);
 
-	const data: {'total': number, 'data': MapData[]} = await res.json();
+	const data: { total: number; data: MapData[] } = await res.json();
 
 	console.log(data);
 

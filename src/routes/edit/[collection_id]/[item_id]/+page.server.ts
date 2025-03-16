@@ -10,7 +10,6 @@ import { updateData } from '$lib/utils';
 
 export const actions: Actions = {
 	default: async ({ request, params }) => {
-
 		const item_id = Number(params.item_id);
 
 		const formData = await request.formData();
@@ -23,6 +22,6 @@ export const actions: Actions = {
 		if (!form.valid) return fail(400, { form });
 
 		//   Update the item in the database
-		  await updateData(item_id, form.data);
+		await updateData(item_id, form.data);
 	}
 };

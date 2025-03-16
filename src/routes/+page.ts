@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
 import type { MapData, Statistics } from '$lib/types';
 
-
 const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
 	try {
 		const response = await fetch(
@@ -17,20 +16,19 @@ const handleGeoreferenced = async ({ itemId }: { itemId: number }) => {
 		if (!response.ok) {
 			throw new Error('Failed to update georeferenced status');
 		}
-
 	} catch (error) {
 		console.error(error);
 	}
 };
 
-const checkAllmaps = async ({ 
-    fetch,
-    itemId, 
-    iiifInfoUrl
-}: { 
-    fetch: (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>,
-    itemId: number, 
-    iiifInfoUrl: string
+const checkAllmaps = async ({
+	fetch,
+	itemId,
+	iiifInfoUrl
+}: {
+	fetch: (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
+	itemId: number;
+	iiifInfoUrl: string;
 }) => {
 	const res = await fetch(`https://annotations.allmaps.org/?url=${iiifInfoUrl}`);
 	const data = await res.json();
@@ -55,17 +53,17 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	console.log('Updating from page.ts');
 
-    if (mapData.isGeoreferenced == 0) {
-	    mapData.isGeoreferenced = await checkAllmaps({ 
-            fetch,
-            itemId: mapData.id, 
-            iiifInfoUrl: mapData.iiifInfoUrl
-        });
-    }
+	if (mapData.isGeoreferenced == 0) {
+		mapData.isGeoreferenced = await checkAllmaps({
+			fetch,
+			itemId: mapData.id,
+			iiifInfoUrl: mapData.iiifInfoUrl
+		});
+	}
 
 	// Directly return the map data properties at the top level, with statistics as a separate property
 	return {
 		...mapData,
 		statistics
-	}
-}
+	};
+};

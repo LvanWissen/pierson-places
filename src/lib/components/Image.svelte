@@ -4,8 +4,8 @@
 	import { Link, LoaderCircle, MapPinned, SkipForward } from 'lucide-svelte';
 	import { browser } from '$app/environment';
 
-	const handleEdit = (): void => {
-		window.location.href = `/edit/${collectionId}/${itemId}`;
+	const handleView = (): void => {
+		window.location.href = `/view/${collectionId}/${itemId}`;
 	};
 
 	const handleLink = (): void => {
@@ -89,11 +89,9 @@
 				<p class="text-gray-600">{date}</p>
 			</div>
 			<div class="w-1/5 flex justify-end">
-				<!-- An edit metadata button -->
-
 				<button
 					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-2"
-					onclick={handleEdit}
+					onclick={handleView}
 				>
 					Edit
 				</button>
