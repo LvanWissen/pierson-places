@@ -17,6 +17,9 @@
 	const interpolateCoords = (points: Point[], interpolationDistance: number): Point[] => {
 		if (points.length < 2) return points;
 
+		// Add the last point
+		points = [...points, points[0]];
+
 		const result: Point[] = [points[0]];
 
 		for (let i = 1; i < points.length; i++) {
@@ -43,7 +46,8 @@
 			result.push([currentX, currentY]);
 		}
 
-		return result;
+		// And remove the last point again
+		return result.slice(0, -1);
 	};
 
 	const getGeoJson = async (annotationPageUrl: string) => {
@@ -61,6 +65,8 @@
 				.split(' ')
 				.map((coord: string) => coord.split(',').map((i: string) => +i));
 
+			console.log(coords);
+
 			// If we're using a thin plate spline, it's nicer to interpolate the points
 			const interpolatedCoords = interpolateCoords(coords, 100); // 100 pixels
 
@@ -71,6 +77,8 @@
 				geometry: polygon
 			});
 		}
+
+		console.log(features);
 
 		return {
 			type: 'FeatureCollection',
