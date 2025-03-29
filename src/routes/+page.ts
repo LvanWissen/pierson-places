@@ -2,8 +2,6 @@ import type { PageLoad } from './$types';
 import type { MapData, Statistics } from '$lib/types';
 import { checkAllmaps } from '$lib/utils';
 
-
-
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('https://lvanwissen-piersonplaces.web.val.run/');
 	const resStatistics = await fetch('https://lvanwissen-piersonplaces.web.val.run/statistics');

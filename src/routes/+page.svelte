@@ -14,8 +14,6 @@
 	$: isGeoreferenced = data.isGeoreferenced || 0;
 	$: statistics = data.statistics || {};
 
-	$: permalink = data.canvasId || '';
-
 	const handleNotMap = async () => {
 		try {
 			iiifInfoUrl = '';

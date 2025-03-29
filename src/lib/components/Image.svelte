@@ -4,31 +4,6 @@
 	import { Link, LoaderCircle, MapPinned, SkipForward } from 'lucide-svelte';
 	import { browser } from '$app/environment';
 
-	const handleView = (): void => {
-		window.location.href = `/view/${collectionId}/${itemId}`;
-	};
-
-	const handleLink = (): void => {
-		navigator.clipboard.writeText(manifestId);
-
-		// Show popup and hide after timeout
-		showCopiedPopup = true;
-		setTimeout(() => {
-			showCopiedPopup = false;
-		}, 2000);
-	};
-
-	const handleNext = (): void => {
-		imageLoading = true;
-
-		invalidateAll().then(() => loadImage());
-	};
-
-	const handleGeoreference = (): void => {
-		// Open new window with Allmaps https://editor.allmaps.org/#/mask?url=https%253A%252F%252Frotterdamspubliek.nl%252Fiiif%252FNL-RtSA_4201_I-138-02-5%252Finfo.json
-		window.open(`https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`);
-	};
-
 	export let collectionId: number;
 	export let itemId: number;
 	export let manifestId: string;
@@ -38,8 +13,10 @@
 	let imageLoading: boolean = true;
 	export let iiifInfoUrl: string;
 
-	// Add state for popup visibility
 	let showCopiedPopup: boolean = false;
+
+	const viewUrl = `/view/${collectionId}/${itemId}`;
+	const georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`;
 
 	$: thumbnailUrl = iiifInfoUrl.endsWith('info.json')
 		? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
@@ -89,21 +66,28 @@
 				<p class="text-gray-600">{date}</p>
 			</div>
 			<div class="w-1/5 flex justify-end">
-				<button
+				<a
 					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-2"
-					onclick={handleView}
+					href={viewUrl}
 				>
 					View
-				</button>
+				</a>
 
 				<div class="relative">
-					<button
+					<a
 						class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
-						onclick={handleLink}
-						title="Copy Manifest URI"
+						href={manifestId}
+						on:click|preventDefault={() => {
+							navigator.clipboard.writeText(manifestId);
+							showCopiedPopup = true;
+							setTimeout(() => {
+								showCopiedPopup = false;
+							}, 2000);
+						}}
+						title={manifestId}
 					>
 						<Link size="20" class="text-orange" />
-					</button>
+					</a>
 
 					{#if showCopiedPopup}
 						<div
@@ -120,8 +104,10 @@
 			<div class="border-t border-gray-200 my-4"></div>
 
 			<div class="flex justify-between">
-				<button
-					onclick={handleGeoreference}
+				<a
+					href={georeferenceUrl}
+					target="_blank"
+					rel="noopener noreferrer"
 					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
 				>
 					{#if isGeoreferenced}
@@ -131,14 +117,18 @@
 					{/if}
 
 					<MapPinned class="ml-1" size="20" />
-				</button>
-				<button
-					onclick={handleNext}
+				</a>
+				<a
+					href="/overview"
+					on:click|preventDefault={() => {
+						imageLoading = true;
+						invalidateAll().then(() => loadImage());
+					}}
 					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100"
 				>
 					Next / Skip
 					<SkipForward class="ml-1" size="20" />
-				</button>
+				</a>
 			</div>
 		{/if}
 	</div>

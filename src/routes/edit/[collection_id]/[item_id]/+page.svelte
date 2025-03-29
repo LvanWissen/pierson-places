@@ -3,7 +3,7 @@
 	import OpenSeadragon, { Viewer } from 'openseadragon';
 
 	import { superForm } from 'sveltekit-superforms';
-	import { Field, Control, Label, Description, FieldErrors } from 'formsnap';
+	import { Field, Control, Label, FieldErrors } from 'formsnap';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { metaDataSchema } from './schema';
 

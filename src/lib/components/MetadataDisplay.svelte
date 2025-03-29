@@ -1,6 +1,7 @@
 <script lang="ts">
 	import MapLibrePreview from './MapLibrePreview.svelte';
 	import { MapPinned, Edit } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 
 	export let metadata: {
 		name: string;
@@ -14,9 +15,8 @@
 	};
 
 	export let isGeoreferenced: number;
-	export let onGeoreference: () => void;
-	export let onEdit: () => void;
 	export let annotationPageUrl: string;
+	export let editUrl: string;
 </script>
 
 <div class="pt-8 pl-8 pr-8 p-4 flex-grow flex flex-col justify-between">
@@ -58,9 +58,11 @@
 	</div>
 
 	<div class="mb-4 mt-4 flex gap-2">
-		<button
+		<a
 			class="w-full text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-center p-2 transition-transform hover:shadow-sm border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
-			on:click={onGeoreference}
+			href={annotationPageUrl}
+			target="_blank"
+			rel="noopener noreferrer"
 		>
 			{#if isGeoreferenced === 1}
 				View this map in Allmaps!
@@ -68,14 +70,15 @@
 				Georeference this map in Allmaps!
 			{/if}
 			<MapPinned class="ml-1" size="20" />
-		</button>
+		</a>
 
-		<button
+		<a
 			class="w-1/2 text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-center p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
-			on:click={onEdit}
+			href={editUrl}
+			on:click|preventDefault={() => goto(editUrl)}
 		>
 			Edit
 			<Edit class="ml-1" size="20" />
-		</button>
+		</a>
 	</div>
 </div>

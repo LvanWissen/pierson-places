@@ -26,7 +26,7 @@
 			warpedMapLayer.addGeoreferenceAnnotationByUrl(annotationPageUrl);
 		});
 
-		map.on('warpedmapadded', (event) => {
+		map.on('warpedmapadded', () => {
 			const bbox = warpedMapLayer.getBounds();
 
 			if (bbox) {

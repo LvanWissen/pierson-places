@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
-	import { goto } from '$app/navigation';
 
 	// Import components
 	import OSD from '$lib/components/OSD.svelte';
@@ -21,19 +20,8 @@
 
 	const iiifId = map.iiifInfoUrl.split('/info.json')[0];
 	const annotationPageUrl = `https://annotations.allmaps.org/?url=${iiifId}`;
-
-	const handleGeoreference = () => {
-		const allmapsUrl =
-			map.isGeoreferenced === 1
-				? `https://allmaps.org/maps?url=${encodeURIComponent(iiifId)}`
-				: `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifId)}`;
-
-		window.open(allmapsUrl, '_blank');
-	};
-
-	const handleEdit = () => {
-		goto(`/edit/${data.map.partOf}/${data.map.id}`);
-	};
+	const georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifId)}`;
+	const editUrl = `/edit/${data.map.partOf}/${data.map.id}`;
 </script>
 
 <div class="w-full flex flex-col md:flex-row min-h-screen">
@@ -47,9 +35,8 @@
 		<MetadataDisplay
 			metadata={$formData}
 			isGeoreferenced={map.isGeoreferenced}
-			onGeoreference={handleGeoreference}
-			onEdit={handleEdit}
-			{annotationPageUrl}
+			annotationPageUrl={map.isGeoreferenced === 1 ? annotationPageUrl : georeferenceUrl}
+			{editUrl}
 		/>
 	</div>
 
