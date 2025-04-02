@@ -107,7 +107,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining Selected</p>
 						<a
-							href="/overview?selected=false&georeferenced=false"
+							href="/overview?selected=true&georeferenced=false"
 							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
 						>
 							{statistics.remainingSelected || 0}
