@@ -4,10 +4,11 @@ export const loadData = async (
 	offset = 0,
 	limit = 10,
 	isGeoreferenced: number | null = null,
+	isSelected: number | null = null,
 	orderBy = 'id'
 ) => {
 	const res = await fetch(
-		`https://lvanwissen-piersonplaces.web.val.run/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&orderBy=${orderBy}`
+		`https://lvanwissen-piersonplaces.web.val.run/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&isSelected=${isSelected}&orderBy=${orderBy}`
 	);
 
 	const data: { total: number; data: MapData[] } = await res.json();

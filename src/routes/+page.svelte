@@ -38,7 +38,9 @@
 	};
 </script>
 
-<div class="flex flex-col items-center p-6 space-y-6 bg-gray-50 min-h-screen justify-center">
+<div
+	class="flex flex-col items-center p-6 pb-24 sm:pb-6 space-y-6 bg-gray-50 min-h-screen justify-center"
+>
 	<Image {manifestId} {collectionId} {itemId} {iiifInfoUrl} {title} {date} {isGeoreferenced} />
 
 	<div class="flex space-x-4">
@@ -50,7 +52,7 @@
 		</button>
 	</div>
 
-	<a href="/overview" class="text-sky-600 hover:underline font-sans">
+	<a href="/overview" class="text-sky-600 hover:underline font-sans mb-12 sm:mb-0">
 		See all maps in this collection
 	</a>
 
@@ -88,6 +90,27 @@
 							class="block text-xs md:text-sm font-bold text-sky-600 hover:underline"
 						>
 							{statistics.remaining || 0}
+						</a>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-2 gap-2">
+					<div class="text-center p-1 bg-gray-50 rounded">
+						<p class="text-xs text-gray-600">Georefereced Selected</p>
+						<a
+							href="/overview?selected=true&georeferenced=true"
+							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
+						>
+							{statistics.selected || 0}
+						</a>
+					</div>
+					<div class="text-center p-1 bg-gray-50 rounded">
+						<p class="text-xs text-gray-600">Remaining Selected</p>
+						<a
+							href="/overview?selected=false&georeferenced=false"
+							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
+						>
+							{statistics.remainingSelected || 0}
 						</a>
 					</div>
 				</div>

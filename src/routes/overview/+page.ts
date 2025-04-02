@@ -13,5 +13,13 @@ export const load: PageLoad = async ({ url }) => {
 		georeferencedFilter = 0;
 	}
 
-	return loadData(0, 10, georeferencedFilter, 'id');
+	const selectionParam = url.searchParams.get('selected');
+	let selectionFilter: number | null = null;
+	if (selectionParam === 'true') {
+		selectionFilter = 1;
+	} else if (selectionParam === 'false') {
+		selectionFilter = 0;
+	}
+
+	return loadData(0, 10, georeferencedFilter, selectionFilter, 'id');
 };

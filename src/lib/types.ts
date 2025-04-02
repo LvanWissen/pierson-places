@@ -28,4 +28,6 @@ export type Statistics = {
 	total: number;
 	georeferenced: number;
 	remaining: number;
+	selected: number;
+	remainingSelected: number;
 };
