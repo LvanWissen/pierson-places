@@ -47,7 +47,7 @@
 	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0">
 		<!-- Metadata -->
 		<form method="POST" use:enhance>
-			<div class="pt-8 pl-8 p-4 flex-grow">
+			<div class="pt-8 pl-8 p-4 grow">
 				<h2 class="text-xl font-semibold text-gray-800">Edit</h2>
 
 				<Field {form} name="name">
@@ -58,7 +58,7 @@
 								{...props}
 								type="text"
 								bind:value={$formData.name}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
 							/>
 						{/snippet}
 					</Control>
@@ -72,7 +72,7 @@
 							<textarea
 								{...props}
 								bind:value={$formData.description}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
 							></textarea>
 						{/snippet}
 					</Control>
@@ -86,7 +86,7 @@
 							<textarea
 								{...props}
 								bind:value={$formData.publication.description}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
 							></textarea>
 						{/snippet}
 					</Control>
@@ -101,7 +101,7 @@
 								{...props}
 								type="text"
 								bind:value={$formData.publication.startDate}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
 							/>
 						{/snippet}
 					</Control>
@@ -116,7 +116,7 @@
 								{...props}
 								type="text"
 								bind:value={$formData.publication.publishedBy}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
 							/>
 						{/snippet}
 					</Control>
@@ -131,7 +131,7 @@
 								{...props}
 								type="text"
 								bind:value={$formData.isPartOf}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-sm shadow-sm sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
 							/>
 						{/snippet}
 					</Control>
@@ -147,7 +147,7 @@
 			<!-- Save button at the bottom -->
 			<div class="p-4 flex justify-end mb-4">
 				<button
-					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100"
+					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100"
 				>
 					Save
 				</button>

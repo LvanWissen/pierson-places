@@ -102,7 +102,7 @@
 
 <div class="flex flex-col items-center space-y-6 bg-gray-50 min-h-screen">
 	<div
-		class="w-full flex flex-row flex-wrap sm:flex-row justify-between items-center sticky top-0 bg-gray-50 z-20 p-3 sm:p-8 border-b shadow-sm"
+		class="w-full flex flex-row flex-wrap sm:flex-row justify-between items-center sticky top-0 bg-gray-50 z-20 p-3 sm:p-8 border-b shadow-xs"
 	>
 		<div class="flex items-center sm:block">
 			<div>
@@ -112,14 +112,14 @@
 		</div>
 		<div class="flex items-center sm:flex sm:justify-end sm:mt-4">
 			<button
-				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-sm py-1 px-2 sm:p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-1.5 sm:mr-2"
+				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-1.5 sm:mr-2"
 				on:click={() => changeFilter('all')}
 			>
 				<span class="hidden sm:inline">{filter === 'all' ? 'Showing all' : 'Show all'}</span>
 				<span class="sm:hidden">All</span>
 			</button>
 			<button
-				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-sm py-1 px-2 sm:p-2 transition-transform hover:shadow-sm border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100 mr-1.5 sm:mr-2"
+				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100 mr-1.5 sm:mr-2"
 				on:click={() =>
 					changeFilter(filter === 'georeferenced' ? 'non-georeferenced' : 'georeferenced')}
 			>
@@ -129,7 +129,7 @@
 				<span class="sm:hidden">{filter === 'georeferenced' ? 'Non-Geo' : 'Geo'}</span>
 			</button>
 			<button
-				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-sm py-1 px-2 sm:p-2 transition-transform hover:shadow-sm border hover:text-amber-600 hover:bg-amber-100 hover:border-amber-300 text-amber-600 bg-amber-100"
+				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-amber-600 hover:bg-amber-100 hover:border-amber-300 text-amber-600 bg-amber-100"
 				on:click={() => changeFilter(null, 'toggle')}
 			>
 				<span class="hidden sm:inline">

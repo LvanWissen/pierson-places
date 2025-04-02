@@ -46,7 +46,7 @@
 	<div class="flex space-x-4">
 		<button
 			onclick={handleNotMap}
-			class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-red-600 hover:bg-red-100 hover:border-red-300 text-red-600 bg-red-100"
+			class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-red-600 hover:bg-red-100 hover:border-red-300 text-red-600 bg-red-100"
 			><CircleAlert class="mr-1" size="20" />
 			This is not a map!
 		</button>
@@ -68,13 +68,13 @@
 			</div>
 
 			<div class="flex flex-col gap-1 md:gap-2 text-sm">
-				<div class="text-center p-1 bg-gray-50 rounded hidden md:block">
+				<div class="text-center p-1 bg-gray-50 rounded-sm hidden md:block">
 					<p class="text-xs text-gray-600">Total</p>
 					<p class="font-bold text-gray-800">{statistics.total || 0}</p>
 				</div>
 
 				<div class="grid grid-cols-2 gap-2">
-					<div class="text-center p-1 bg-gray-50 rounded">
+					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Georeferenced</p>
 						<a
 							href="/overview?georeferenced=true"
@@ -83,7 +83,7 @@
 							{statistics.georeferenced || 0}
 						</a>
 					</div>
-					<div class="text-center p-1 bg-gray-50 rounded">
+					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining</p>
 						<a
 							href="/overview?georeferenced=false"
@@ -95,7 +95,7 @@
 				</div>
 
 				<div class="grid grid-cols-2 gap-2">
-					<div class="text-center p-1 bg-gray-50 rounded">
+					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Georefereced Selected</p>
 						<a
 							href="/overview?selected=true&georeferenced=true"
@@ -104,7 +104,7 @@
 							{statistics.selected || 0}
 						</a>
 					</div>
-					<div class="text-center p-1 bg-gray-50 rounded">
+					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining Selected</p>
 						<a
 							href="/overview?selected=false&georeferenced=false"

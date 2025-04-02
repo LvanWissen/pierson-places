@@ -5,13 +5,13 @@
 
 <div class="flex">
 	<button
-		class={`text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 ${viewMode === 'image' ? 'text-sky-600 bg-sky-100' : 'text-gray-600 bg-gray-100'} mr-2`}
+		class={`text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 ${viewMode === 'image' ? 'text-sky-600 bg-sky-100' : 'text-gray-600 bg-gray-100'} mr-2`}
 		on:click={() => (viewMode = 'image')}
 	>
 		Image
 	</button>
 	<button
-		class={`text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border ${
+		class={`text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-xs border ${
 			isGeoreferenced === 1
 				? `hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 ${viewMode === 'map' ? 'text-sky-600 bg-sky-100' : 'text-gray-600 bg-gray-100'}`
 				: 'text-gray-400 bg-gray-100 cursor-not-allowed'

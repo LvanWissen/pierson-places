@@ -19,7 +19,7 @@
 	export let editUrl: string;
 </script>
 
-<div class="pt-8 pl-8 pr-8 p-4 flex-grow flex flex-col justify-between">
+<div class="pt-8 pl-8 pr-8 p-4 grow flex flex-col justify-between">
 	<div>
 		<div class="mb-4">
 			<h3 class="font-medium text-sm text-gray-700">Name</h3>
@@ -59,7 +59,7 @@
 
 	<div class="mb-4 mt-4 flex gap-2">
 		<a
-			class="w-full text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-center p-2 transition-transform hover:shadow-sm border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
+			class="w-full text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-center p-2 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
 			href={annotationPageUrl}
 			target="_blank"
 			rel="noopener noreferrer"
@@ -73,7 +73,7 @@
 		</a>
 
 		<a
-			class="w-1/2 text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-center p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
+			class="w-1/2 text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-center p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
 			href={editUrl}
 			on:click|preventDefault={() => goto(editUrl)}
 		>

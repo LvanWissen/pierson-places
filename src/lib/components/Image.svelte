@@ -55,7 +55,7 @@
 	});
 </script>
 
-<div class="w-full max-w-lg bg-white shadow-sm rounded-sm overflow-hidden">
+<div class="w-full max-w-lg bg-white shadow-xs rounded-xs overflow-hidden">
 	<div class=" bg-gray-100 flex justify-center items-center w-full aspect-square">
 		{#if imageLoading}
 			<LoaderCircle class="h-20 w-20 text-gray-400 animate-spin" />
@@ -72,7 +72,7 @@
 			</div>
 			<div class="w-1/5 flex justify-end">
 				<a
-					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-2"
+					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-2"
 					href={viewUrl}
 				>
 					View
@@ -80,7 +80,7 @@
 
 				<div class="relative">
 					<a
-						class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
+						class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
 						href={manifestId}
 						on:click|preventDefault={() => {
 							navigator.clipboard.writeText(manifestId);
@@ -96,7 +96,7 @@
 
 					{#if showCopiedPopup}
 						<div
-							class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded shadow-md z-50"
+							class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded-sm shadow-md z-50"
 						>
 							Copied!
 						</div>
@@ -113,7 +113,7 @@
 					href={georeferenceUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
+					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
 				>
 					{#if isGeoreferenced}
 						Open this map in Allmaps!
@@ -129,7 +129,7 @@
 						imageLoading = true;
 						invalidateAll().then(() => loadImage());
 					}}
-					class="text-xs lg:text-sm font-semibold rounded-sm flex items-center justify-between p-2 transition-transform hover:shadow-sm border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100"
+					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100"
 				>
 					Next / Skip
 					<SkipForward class="ml-1" size="20" />
