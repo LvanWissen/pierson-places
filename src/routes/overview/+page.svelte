@@ -55,11 +55,11 @@
 		}
 	};
 
-	const changeFilter = (filterValue: string, selectionAction?: 'toggle' | null) => {
+	const changeFilter = (filterValue: string | null, selectionAction?: 'toggle' | null) => {
 		const url = new URL(window.location.href);
 
 		// Handle georeferenced filter
-		if (filterValue) {
+		if (filterValue !== null) {
 			filter = filterValue;
 
 			if (filter === 'georeferenced') {
@@ -82,9 +82,6 @@
 			if (selectionFilter === 1) {
 				selectionFilter = 0;
 				url.searchParams.set('selected', 'false');
-			} else if (selectionFilter === 0) {
-				selectionFilter = null;
-				url.searchParams.delete('selected');
 			} else {
 				selectionFilter = 1;
 				url.searchParams.set('selected', 'true');
@@ -133,14 +130,10 @@
 				on:click={() => changeFilter(null, 'toggle')}
 			>
 				<span class="hidden sm:inline">
-					{selectionFilter === 1
-						? 'Selected Only'
-						: selectionFilter === 0
-							? 'Unselected Only'
-							: 'Show Selected'}
+					{selectionFilter === 1 ? 'Show Unselected' : 'Show Selected'}
 				</span>
 				<span class="sm:hidden">
-					{selectionFilter === 1 ? 'Selected' : selectionFilter === 0 ? 'Unselected' : 'Selection'}
+					{selectionFilter === 1 ? 'Unselected' : 'Selected'}
 				</span>
 			</button>
 		</div>
