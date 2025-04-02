@@ -60,7 +60,7 @@
 	<div class="mb-4 mt-4 flex gap-2">
 		<a
 			class="w-full text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-center p-2 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
-			href={annotationPageUrl}
+			href={editUrl}
 			target="_blank"
 			rel="noopener noreferrer"
 		>
