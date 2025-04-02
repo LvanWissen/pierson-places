@@ -15,8 +15,13 @@
 
 	let showCopiedPopup: boolean = false;
 
-	const viewUrl = `/view/${collectionId}/${itemId}`;
-	const georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`;
+	// const viewUrl = `/view/${collectionId}/${itemId}`;
+	let viewUrl: string;
+	let georeferenceUrl: string;
+
+	$: viewUrl = `/view/${collectionId}/${itemId}`;
+
+	$: georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`;
 
 	$: thumbnailUrl = iiifInfoUrl.endsWith('info.json')
 		? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
