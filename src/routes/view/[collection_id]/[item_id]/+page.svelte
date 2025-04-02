@@ -35,7 +35,8 @@
 		<MetadataDisplay
 			metadata={$formData}
 			isGeoreferenced={map.isGeoreferenced}
-			annotationPageUrl={map.isGeoreferenced === 1 ? annotationPageUrl : georeferenceUrl}
+			annotationPageUrl={map.isGeoreferenced === 1 ? annotationPageUrl : ''}
+			{georeferenceUrl}
 			{editUrl}
 		/>
 	</div>
