@@ -1,6 +1,6 @@
 <script lang="ts">
 	import InfiniteLoading from 'svelte-infinite-loading';
-	import Image from '$lib/components/Image.svelte';
+	import Image from '$lib/components/ImageOverview.svelte';
 	import { loadData } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
