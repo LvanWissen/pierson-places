@@ -152,6 +152,7 @@
 					displayLinks={false}
 					collectionId={image.partOf}
 					itemId={image.id}
+					isGeoreferenced={image.isGeoreferenced}
 				/>
 			</div>
 		{/each}
