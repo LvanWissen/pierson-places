@@ -65,16 +65,18 @@
 				.split(' ')
 				.map((coord: string) => coord.split(',').map((i: string) => +i));
 
-			console.log(coords);
-
 			// If we're using a thin plate spline, it's nicer to interpolate the points
 			const interpolatedCoords = interpolateCoords(coords, 100); // 100 pixels
 
-			const polygon = transformer.transformForwardAsGeojson([interpolatedCoords]);
+			const polygon = transformer.transformToGeo([interpolatedCoords]);
+
 			features.push({
 				type: 'Feature',
 				properties: {},
-				geometry: polygon
+				geometry: {
+					type: 'Polygon',
+					coordinates: polygon
+				}
 			});
 		}
 
