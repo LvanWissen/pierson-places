@@ -4,10 +4,12 @@
 
 	import { superForm } from 'sveltekit-superforms';
 	import { Field, Control, Label, FieldErrors } from 'formsnap';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { metaDataSchema } from './schema';
+	import type { PageData } from './$types';
+	import type { MetaData } from '$lib/types';
 
-	export let data;
+	export let data: PageData;
 
 	let map = data.map;
 
@@ -15,10 +17,10 @@
 	let viewer: Viewer;
 	let tileSources: string[] = [map.iiifInfoUrl];
 
-	const form = superForm(data.form, {
+	const form = superForm<MetaData>(data.form, {
 		dataType: 'json',
 		resetForm: false,
-		validators: zodClient(metaDataSchema)
+		validators: zod4Client(metaDataSchema)
 	});
 	const { form: formData, enhance } = form;
 

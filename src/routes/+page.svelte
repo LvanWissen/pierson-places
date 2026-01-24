@@ -1,18 +1,38 @@
 <script lang="ts">
-	export let data;
-
+	import { beforeUpdate } from 'svelte';
 	import { CircleAlert } from 'lucide-svelte';
 	import Image from '$lib/components/Image.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
-	$: collectionId = data.partOf;
-	$: manifestId = data.manifestId;
-	$: itemId = data.id;
-	$: iiifInfoUrl = data.iiifInfoUrl;
-	$: title = data.metadata?.name || 'Unknown Title';
-	$: date = data.metadata?.publication.startDate || 'Unknown Date';
-	$: isGeoreferenced = data.isGeoreferenced || 0;
-	$: statistics = data.statistics || {};
+	export let data;
+
+	let collectionId = data.partOf;
+	let manifestId = data.manifestId;
+	let itemId = data.id;
+	let iiifInfoUrl = data.iiifInfoUrl;
+	let title = data.metadata?.name || 'Unknown Title';
+	let date = data.metadata?.publication.startDate || 'Unknown Date';
+	let isGeoreferenced = data.isGeoreferenced || 0;
+	let statistics = data.statistics || {};
+	let lastDataId = data.id;
+
+	beforeUpdate(() => {
+		if (!data) return;
+
+		collectionId = data.partOf;
+		manifestId = data.manifestId;
+		itemId = data.id;
+		title = data.metadata?.name || 'Unknown Title';
+		date = data.metadata?.publication.startDate || 'Unknown Date';
+		isGeoreferenced = data.isGeoreferenced || 0;
+		statistics = data.statistics || {};
+
+		if (data.id !== lastDataId) {
+			lastDataId = data.id;
+			iiifInfoUrl = data.iiifInfoUrl;
+		}
+	});
 
 	const handleNotMap = async () => {
 		try {
@@ -52,7 +72,7 @@
 		</button>
 	</div>
 
-	<a href="/overview" class="text-sky-600 hover:underline font-sans mb-12 sm:mb-0">
+	<a href={resolve('/overview')} class="text-sky-600 hover:underline font-sans mb-12 sm:mb-0">
 		See all maps in this collection
 	</a>
 
@@ -77,7 +97,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Georeferenced</p>
 						<a
-							href="/overview?georeferenced=true"
+							href={resolve('/overview?georeferenced=true')}
 							class="block text-xs md:text-sm font-bold text-sky-600 hover:underline"
 						>
 							{statistics.georeferenced || 0}
@@ -86,7 +106,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining</p>
 						<a
-							href="/overview?georeferenced=false"
+							href={resolve('/overview?georeferenced=false')}
 							class="block text-xs md:text-sm font-bold text-sky-600 hover:underline"
 						>
 							{statistics.remaining || 0}
@@ -98,7 +118,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Georefereced Selected</p>
 						<a
-							href="/overview?selected=true&georeferenced=true"
+							href={resolve('/overview?selected=true&georeferenced=true')}
 							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
 						>
 							{statistics.selected || 0}
@@ -107,7 +127,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining Selected</p>
 						<a
-							href="/overview?selected=true&georeferenced=false"
+							href={resolve('/overview?selected=true&georeferenced=false')}
 							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
 						>
 							{statistics.remainingSelected || 0}

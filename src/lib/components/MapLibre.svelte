@@ -22,12 +22,12 @@
 		const warpedMapLayer = new WarpedMapLayer();
 
 		map.on('load', () => {
-			map.addLayer(warpedMapLayer);
+			map.addLayer(warpedMapLayer as unknown as maplibregl.CustomLayerInterface);
 			warpedMapLayer.addGeoreferenceAnnotationByUrl(annotationPageUrl);
 		});
 
 		map.on('warpedmapadded', () => {
-			const bbox = warpedMapLayer.getBounds();
+			const bbox = warpedMapLayer.getBounds() as maplibregl.LngLatBoundsLike | null;
 
 			if (bbox) {
 				map.fitBounds(bbox, {

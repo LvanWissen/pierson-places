@@ -3,7 +3,7 @@ import type { PageLoad } from './$types';
 
 import { loadData } from '$lib/utils';
 
-export const load: PageLoad = async ({ url }) => {
+export const load: PageLoad = async ({ url, fetch }) => {
 	const georeferencedParam = url.searchParams.get('georeferenced');
 	let georeferencedFilter: number | null = null;
 
@@ -21,5 +21,5 @@ export const load: PageLoad = async ({ url }) => {
 		selectionFilter = 0;
 	}
 
-	return loadData(0, 10, georeferencedFilter, selectionFilter, 'id');
+	return loadData(0, 10, georeferencedFilter, selectionFilter, 'id', fetch);
 };

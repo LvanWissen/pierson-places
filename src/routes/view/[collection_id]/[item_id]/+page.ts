@@ -4,7 +4,8 @@ import type { PageLoad } from './$types';
 import type { MapData } from '$lib/types';
 import { metaDataSchema } from './schema';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
+import type { MetaData } from '$lib/types';
 
 import { checkAllmaps } from '$lib/utils';
 
@@ -23,5 +24,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		});
 	}
 
-	return { form: await superValidate(mapData.metadata, zod(metaDataSchema)), map: mapData };
+	return {
+		form: await superValidate<MetaData>(mapData.metadata, zod4(metaDataSchema)),
+		map: mapData
+	};
 };

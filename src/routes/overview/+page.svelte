@@ -1,9 +1,11 @@
 <script lang="ts">
 	import InfiniteLoading from 'svelte-infinite-loading';
 	import Image from '$lib/components/ImageOverview.svelte';
+	import { beforeUpdate } from 'svelte';
 	import { loadData } from '$lib/utils';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/stores';
 
 	let filter = 'all';
 	let georeferencedFilter: number | null = null;
@@ -12,12 +14,13 @@
 
 	let offset = 0;
 	export let data;
-	$: images = data.items;
-	$: total = data.total;
+	let images = data.items;
+	let total = data.total;
+	let lastData = data;
 
 	$: {
-		const georeferencedParam = page.url.searchParams.get('georeferenced');
-		const selectedParam = page.url.searchParams.get('selected');
+		const georeferencedParam = $page.url.searchParams.get('georeferenced');
+		const selectedParam = $page.url.searchParams.get('selected');
 
 		if (georeferencedParam === 'true') {
 			filter = 'georeferenced';
@@ -39,7 +42,11 @@
 		}
 	}
 
-	const handleScroll = async ({ detail: { loaded, complete } }) => {
+	const handleScroll = async ({
+		detail: { loaded, complete }
+	}: {
+		detail: { loaded: () => void; complete: () => void };
+	}) => {
 		offset += 10;
 		console.log('Loading more data', offset);
 
@@ -88,13 +95,23 @@
 			}
 		}
 
-		goto(url.toString(), { replaceState: true, keepFocus: true });
+		const nextPath = `${url.pathname}${url.search}`;
+		goto(resolve(nextPath), { replaceState: true, keepFocus: true });
 
 		// Reset and reload data
 		offset = -10;
 		images = [];
 		resetCounter += 1;
 	};
+
+	beforeUpdate(() => {
+		if (!data || data === lastData) return;
+
+		lastData = data;
+		images = data.items;
+		total = data.total;
+		offset = 0;
+	});
 </script>
 
 <div class="flex flex-col items-center space-y-6 bg-gray-50 min-h-screen">
@@ -142,7 +159,7 @@
 	<div
 		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-8"
 	>
-		{#each images as image}
+		{#each images as image (image.id)}
 			<div class="w-full">
 				<Image
 					manifestId={image.manifestId}

@@ -5,9 +5,10 @@ export const loadData = async (
 	limit = 10,
 	isGeoreferenced: number | null = null,
 	isSelected: number | null = null,
-	orderBy = 'id'
+	orderBy = 'id',
+	fetchFn: typeof fetch = fetch
 ) => {
-	const res = await fetch(
+	const res = await fetchFn(
 		`https://lvanwissen-piersonplaces.web.val.run/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&isSelected=${isSelected}&orderBy=${orderBy}`
 	);
 

@@ -2,6 +2,7 @@
 	import MapLibrePreview from './MapLibrePreview.svelte';
 	import { MapPinned, Edit } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	export let metadata: {
 		name: string;
@@ -61,7 +62,7 @@
 	<div class="mb-4 mt-4 flex gap-2">
 		<a
 			class="w-full text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-center p-2 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
-			href={georeferenceUrl}
+			href={resolve(georeferenceUrl)}
 			target="_blank"
 			rel="noopener noreferrer"
 		>
@@ -75,8 +76,8 @@
 
 		<a
 			class="w-1/2 text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-center p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
-			href={editUrl}
-			on:click|preventDefault={() => goto(editUrl)}
+			href={resolve(editUrl)}
+			on:click|preventDefault={() => goto(resolve(editUrl))}
 		>
 			Edit
 			<Edit class="ml-1" size="20" />

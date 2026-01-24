@@ -18,7 +18,7 @@ export type MetaData = {
 	description: string;
 	publication: {
 		description: string;
-		startDate: string;
+		startDate?: string;
 		publishedBy: string;
 	};
 	isPartOf: string;

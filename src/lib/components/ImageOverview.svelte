@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { Eye, Link, LoaderCircle, MapPinned, Search, SkipForward } from 'lucide-svelte';
+	import { resolve } from '$app/paths';
+	import { Link, LoaderCircle, MapPinned, Search, SkipForward } from 'lucide-svelte';
 	import { browser } from '$app/environment';
 
 	export let collectionId: number;
@@ -19,9 +20,11 @@
 	let viewUrl: string;
 	let georeferenceUrl: string;
 
-	$: viewUrl = `/view/${collectionId}/${itemId}`;
+	$: viewUrl = resolve(`/view/${collectionId}/${itemId}`);
 
-	$: georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`;
+	$: georeferenceUrl = resolve(
+		`https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`
+	);
 
 	$: thumbnailUrl = iiifInfoUrl.endsWith('info.json')
 		? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
@@ -76,7 +79,7 @@
 					<!-- Top row: View and Link buttons -->
 					<a
 						class="text-xs font-semibold rounded-xs flex items-center justify-center p-1 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
-						href={viewUrl}
+						href={resolve(viewUrl)}
 						title="View this map"
 						target="_blank"
 					>
@@ -86,7 +89,7 @@
 					<div class="relative">
 						<a
 							class="text-xs font-semibold rounded-xs flex items-center justify-center p-1.5 transition-transform hover:shadow-xs border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
-							href={manifestId}
+							href={resolve(manifestId)}
 							on:click|preventDefault={() => {
 								navigator.clipboard.writeText(manifestId);
 								showCopiedPopup = true;
@@ -110,7 +113,7 @@
 
 					<!-- Bottom row: Georeference button spanning both columns -->
 					<a
-						href={georeferenceUrl}
+						href={resolve(georeferenceUrl)}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="col-span-2 text-xs font-semibold rounded-xs flex items-center justify-center p-1.5 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
@@ -130,7 +133,7 @@
 
 			<div class="flex justify-between">
 				<a
-					href={georeferenceUrl}
+					href={resolve(georeferenceUrl)}
 					target="_blank"
 					rel="noopener noreferrer"
 					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
@@ -144,7 +147,7 @@
 					<MapPinned class="ml-1" size="20" />
 				</a>
 				<a
-					href="/overview"
+					href={resolve('/overview')}
 					on:click|preventDefault={() => {
 						imageLoading = true;
 						invalidateAll().then(() => loadImage());

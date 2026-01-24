@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
+	import type { PageData } from './$types';
+	import type { MetaData } from '$lib/types';
 
 	// Import components
 	import OSD from '$lib/components/OSD.svelte';
@@ -7,13 +9,13 @@
 	import MetadataDisplay from '$lib/components/MetadataDisplay.svelte';
 	import ViewToggle from '$lib/components/ViewToggle.svelte';
 
-	export let data;
+	export let data: PageData;
 
 	let viewMode = 'image';
 	let map = data.map;
 
 	// Keep form data but don't use enhance
-	const { form: formData } = superForm(data.form, {
+	const { form: formData } = superForm<MetaData>(data.form, {
 		dataType: 'json',
 		validators: undefined // No need for validators in read-only mode
 	});
