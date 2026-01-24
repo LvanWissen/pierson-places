@@ -89,7 +89,7 @@
 					<div class="relative">
 						<a
 							class="text-xs font-semibold rounded-xs flex items-center justify-center p-1.5 transition-transform hover:shadow-xs border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
-							href={resolve(manifestId)}
+							href={manifestId}
 							on:click|preventDefault={() => {
 								navigator.clipboard.writeText(manifestId);
 								showCopiedPopup = true;
