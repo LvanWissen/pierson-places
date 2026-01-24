@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
 	import { CircleAlert } from 'lucide-svelte';
 	import Image from '$lib/components/ImageOverview.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
-	export let data;
+	const props = $props();
+	const data = $derived(props.data);
 
-	let collectionId = data.partOf;
-	let manifestId = data.manifestId;
-	let itemId = data.id;
-	let iiifInfoUrl = data.iiifInfoUrl;
-	let title = data.metadata?.name || 'Unknown Title';
-	let date = data.metadata?.publication.startDate || 'Unknown Date';
-	let isGeoreferenced = data.isGeoreferenced || 0;
-	let statistics = data.statistics || {};
-	let lastDataId = data.id;
+	let collectionId = $derived(data.partOf);
+	let manifestId = $derived(data.manifestId);
+	let itemId = $derived(data.id);
+	let iiifInfoUrl = $derived(data.iiifInfoUrl);
+	let title = $derived(data.metadata?.name || 'Unknown Title');
+	let date = $derived(data.metadata?.publication.startDate || 'Unknown Date');
+	let isGeoreferenced = $derived(data.isGeoreferenced || 0);
+	let statistics = $derived(data.statistics || {});
+	let lastDataId = $derived(data.id);
 
-	beforeUpdate(() => {
+	$effect.pre(() => {
 		if (!data) return;
 
 		collectionId = data.partOf;

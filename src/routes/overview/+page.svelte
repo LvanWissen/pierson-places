@@ -1,26 +1,25 @@
 <script lang="ts">
 	import InfiniteLoading from 'svelte-infinite-loading';
 	import Image from '$lib/components/ImageOverview.svelte';
-	import { beforeUpdate } from 'svelte';
 	import { loadData } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
-	let filter = 'all';
-	let georeferencedFilter: number | null = null;
-	let selectionFilter: number | null = null;
-	let resetCounter = 0;
+	let filter = $state('all');
+	let georeferencedFilter = $state<number | null>(null);
+	let selectionFilter = $state<number | null>(null);
+	let resetCounter = $state(0);
 
-	let offset = 0;
-	export let data;
-	let images = data.items;
-	let total = data.total;
-	let lastData = data;
+	let offset = $state(0);
+	const { data } = $props();
+	let images = $derived(data.items);
+	let total = $derived(data.total);
+	let lastData = $derived(data);
 
-	$: {
-		const georeferencedParam = $page.url.searchParams.get('georeferenced');
-		const selectedParam = $page.url.searchParams.get('selected');
+	$effect(() => {
+		const georeferencedParam = page.url.searchParams.get('georeferenced');
+		const selectedParam = page.url.searchParams.get('selected');
 
 		if (georeferencedParam === 'true') {
 			filter = 'georeferenced';
@@ -40,7 +39,7 @@
 		} else {
 			selectionFilter = null;
 		}
-	}
+	});
 
 	const handleScroll = async ({
 		detail: { loaded, complete }
@@ -104,7 +103,7 @@
 		resetCounter += 1;
 	};
 
-	beforeUpdate(() => {
+	$effect.pre(() => {
 		if (!data || data === lastData) return;
 
 		lastData = data;
@@ -127,14 +126,14 @@
 		<div class="flex items-center sm:flex sm:justify-end sm:mt-4">
 			<button
 				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-1.5 sm:mr-2"
-				on:click={() => changeFilter('all')}
+				onclick={() => changeFilter('all')}
 			>
 				<span class="hidden sm:inline">{filter === 'all' ? 'Showing all' : 'Show all'}</span>
 				<span class="sm:hidden">All</span>
 			</button>
 			<button
 				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100 mr-1.5 sm:mr-2"
-				on:click={() =>
+				onclick={() =>
 					changeFilter(filter === 'georeferenced' ? 'non-georeferenced' : 'georeferenced')}
 			>
 				<span class="hidden sm:inline">
@@ -144,7 +143,7 @@
 			</button>
 			<button
 				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-amber-600 hover:bg-amber-100 hover:border-amber-300 text-amber-600 bg-amber-100"
-				on:click={() => changeFilter(null, 'toggle')}
+				onclick={() => changeFilter(null, 'toggle')}
 			>
 				<span class="hidden sm:inline">
 					{selectionFilter === 1 ? 'Show Unselected' : 'Show Selected'}
