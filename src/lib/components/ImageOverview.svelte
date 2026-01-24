@@ -20,11 +20,12 @@
 	let viewUrl: string;
 	let georeferenceUrl: string;
 
-	$: viewUrl = resolve(`/view/${collectionId}/${itemId}`);
+	$: viewUrl = resolve('/view/[collection_id]/[item_id]', {
+		collection_id: String(collectionId),
+		item_id: String(itemId)
+	});
 
-	$: georeferenceUrl = resolve(
-		`https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`
-	);
+	$: georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`;
 
 	$: thumbnailUrl = iiifInfoUrl.endsWith('info.json')
 		? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
@@ -32,7 +33,8 @@
 
 	export let title: string = 'Unknown';
 	export let date: string = 'Unknown';
-	export let displayLinks: boolean = true;
+	export let displayLinksBottom: boolean = true;
+	export let displayLinksRight: boolean = false;
 
 	$: {
 		if (iiifInfoUrl === '') {
@@ -79,7 +81,7 @@
 					<!-- Top row: View and Link buttons -->
 					<a
 						class="text-xs font-semibold rounded-xs flex items-center justify-center p-1 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
-						href={resolve(viewUrl)}
+						href={viewUrl}
 						title="View this map"
 						target="_blank"
 					>
@@ -111,29 +113,30 @@
 						{/if}
 					</div>
 
-					<!-- Bottom row: Georeference button spanning both columns -->
-					<a
-						href={resolve(georeferenceUrl)}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="col-span-2 text-xs font-semibold rounded-xs flex items-center justify-center p-1.5 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
-						title={isGeoreferenced
-							? 'Open this map in Allmaps!'
-							: 'Georeference this map in Allmaps!'}
-					>
-						<MapPinned class="ml-1" size="18" />
-					</a>
+					{#if displayLinksRight}
+						<a
+							href={georeferenceUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="col-span-2 text-xs font-semibold rounded-xs flex items-center justify-center p-1.5 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"
+							title={isGeoreferenced
+								? 'Open this map in Allmaps!'
+								: 'Georeference this map in Allmaps!'}
+						>
+							<MapPinned class="ml-1" size="18" />
+						</a>
+					{/if}
 				</div>
 			</div>
 		</div>
 
-		{#if displayLinks}
+		{#if displayLinksBottom}
 			<!-- Separator -->
 			<div class="border-t border-gray-200 my-4"></div>
 
 			<div class="flex justify-between">
 				<a
-					href={resolve(georeferenceUrl)}
+					href={georeferenceUrl}
 					target="_blank"
 					rel="noopener noreferrer"
 					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-green-600 hover:bg-green-100 hover:border-green-300 text-green-600 bg-green-100"

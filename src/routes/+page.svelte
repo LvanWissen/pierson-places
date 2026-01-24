@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { CircleAlert } from 'lucide-svelte';
-	import Image from '$lib/components/Image.svelte';
+	import Image from '$lib/components/ImageOverview.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
@@ -61,7 +61,17 @@
 <div
 	class="flex flex-col items-center p-6 pb-24 sm:pb-6 space-y-6 bg-gray-50 min-h-screen justify-center"
 >
-	<Image {manifestId} {collectionId} {itemId} {iiifInfoUrl} {title} {date} {isGeoreferenced} />
+	<Image
+		{manifestId}
+		{collectionId}
+		{itemId}
+		{iiifInfoUrl}
+		{title}
+		{date}
+		{isGeoreferenced}
+		displayLinksBottom={true}
+		displayLinksRight={false}
+	/>
 
 	<div class="flex space-x-4">
 		<button
@@ -97,7 +107,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Georeferenced</p>
 						<a
-							href={resolve('/overview?georeferenced=true')}
+							href={`${resolve('/overview')}?georeferenced=true`}
 							class="block text-xs md:text-sm font-bold text-sky-600 hover:underline"
 						>
 							{statistics.georeferenced || 0}
@@ -106,7 +116,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining</p>
 						<a
-							href={resolve('/overview?georeferenced=false')}
+							href={`${resolve('/overview')}?georeferenced=false`}
 							class="block text-xs md:text-sm font-bold text-sky-600 hover:underline"
 						>
 							{statistics.remaining || 0}
@@ -118,7 +128,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Georefereced Selected</p>
 						<a
-							href={resolve('/overview?selected=true&georeferenced=true')}
+							href={`${resolve('/overview')}?selected=true&georeferenced=true`}
 							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
 						>
 							{statistics.selected || 0}
@@ -127,7 +137,7 @@
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
 						<p class="text-xs text-gray-600">Remaining Selected</p>
 						<a
-							href={resolve('/overview?selected=true&georeferenced=false')}
+							href={`${resolve('/overview')}?selected=true&georeferenced=false`}
 							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
 						>
 							{statistics.remainingSelected || 0}

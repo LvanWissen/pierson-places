@@ -95,8 +95,8 @@
 			}
 		}
 
-		const nextPath = `${url.pathname}${url.search}`;
-		goto(resolve(nextPath), { replaceState: true, keepFocus: true });
+		const nextPath = `${resolve('/overview')}${url.search}`;
+		goto(nextPath, { replaceState: true, keepFocus: true });
 
 		// Reset and reload data
 		offset = -10;
@@ -166,7 +166,8 @@
 					iiifInfoUrl={image.iiifInfoUrl}
 					title={image.metadata.name}
 					date={image.metadata.publication.startDate}
-					displayLinks={false}
+					displayLinksBottom={false}
+					displayLinksRight={true}
 					collectionId={image.partOf}
 					itemId={image.id}
 					isGeoreferenced={image.isGeoreferenced}
