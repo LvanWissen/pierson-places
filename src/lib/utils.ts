@@ -1,5 +1,12 @@
 import type { MapData, MetaData } from '$lib/types';
 
+export const deaccent = (value: string) =>
+	value
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/\s+/g, ' ')
+		.trim();
+
 export const loadData = async (
 	offset = 0,
 	limit = 10,
@@ -15,6 +22,31 @@ export const loadData = async (
 	const data: { total: number; data: MapData[] } = await res.json();
 
 	return { items: data.data, offset, limit, total: data.total };
+};
+
+export const searchData = async (query: string, fetchFn: typeof fetch = fetch) => {
+	const normalizedQuery = deaccent(query);
+
+	if (!normalizedQuery) {
+		return { items: [], offset: 0, limit: 0, total: 0 };
+	}
+
+	const res = await fetchFn(
+		`https://lvanwissen-piersonplaces.web.val.run/search?query=${encodeURIComponent(
+			normalizedQuery
+		)}`
+	);
+
+	const items: MapData[] = await res.json();
+
+	console.log('searchData', { query, normalizedQuery, items });
+
+	return {
+		items,
+		offset: 0,
+		limit: items.length,
+		total: items.length
+	};
 };
 
 export const updateData = async (id: number, data: MetaData) => {

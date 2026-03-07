@@ -1,7 +1,7 @@
 <script lang="ts">
 	import InfiniteLoading from 'svelte-infinite-loading';
 	import Image from '$lib/components/ImageOverview.svelte';
-	import { loadData } from '$lib/utils';
+	import { loadData, searchData } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -12,6 +12,11 @@
 	let resetCounter = $state(0);
 
 	let offset = $state(0);
+	let searchQuery = $state('');
+	let isSearching = $state(false);
+	let searchError = $state<string | null>(null);
+	let searchRequestId = 0;
+	let hasInitializedSearch = $state(false);
 	const { data } = $props();
 	let images = $derived(data.items);
 	let total = $derived(data.total);
@@ -20,6 +25,7 @@
 	$effect(() => {
 		const georeferencedParam = page.url.searchParams.get('georeferenced');
 		const selectedParam = page.url.searchParams.get('selected');
+		const queryParam = page.url.searchParams.get('query') ?? '';
 
 		if (georeferencedParam === 'true') {
 			filter = 'georeferenced';
@@ -39,13 +45,38 @@
 		} else {
 			selectionFilter = null;
 		}
+
+		if (queryParam !== searchQuery) {
+			searchQuery = queryParam;
+		}
 	});
+
+	const updateSearchParam = (value: string) => {
+		const url = new URL(window.location.href);
+		if (value) {
+			url.searchParams.set('query', value);
+		} else {
+			url.searchParams.delete('query');
+		}
+		const nextPath = `${resolve('/overview')}${url.search}`;
+		goto(nextPath, { replaceState: true, keepFocus: true });
+	};
+
+	const handleSearchInput = (event: Event) => {
+		const value = (event.currentTarget as HTMLInputElement).value;
+		searchQuery = value;
+		updateSearchParam(value.trim());
+	};
 
 	const handleScroll = async ({
 		detail: { loaded, complete }
 	}: {
 		detail: { loaded: () => void; complete: () => void };
 	}) => {
+		if (searchQuery.trim()) {
+			complete();
+			return;
+		}
 		offset += 10;
 		console.log('Loading more data', offset);
 
@@ -60,6 +91,59 @@
 			loaded();
 		}
 	};
+
+	$effect(() => {
+		const currentQuery = searchQuery.trim();
+		searchError = null;
+
+		if (!hasInitializedSearch) {
+			hasInitializedSearch = true;
+			if (!currentQuery) return;
+		}
+
+		if (!currentQuery) {
+			isSearching = false;
+			const requestId = ++searchRequestId;
+			(async () => {
+				try {
+					const newData = await loadData(0, 10, georeferencedFilter, selectionFilter);
+					if (requestId !== searchRequestId) return;
+					images = newData.items;
+					total = newData.total;
+					offset = 0;
+					resetCounter += 1;
+				} catch (error) {
+					if (requestId !== searchRequestId) return;
+					searchError = 'Failed to load maps';
+					images = [];
+					total = 0;
+				}
+			})();
+			return;
+		}
+
+		const requestId = ++searchRequestId;
+		isSearching = true;
+		(async () => {
+			try {
+				const result = await searchData(currentQuery);
+				if (requestId !== searchRequestId) return;
+				images = result.items;
+				total = result.total;
+				offset = 0;
+				resetCounter += 1;
+			} catch (error) {
+				if (requestId !== searchRequestId) return;
+				searchError = 'Failed to load search results';
+				images = [];
+				total = 0;
+			} finally {
+				if (requestId === searchRequestId) {
+					isSearching = false;
+				}
+			}
+		})();
+	});
 
 	const changeFilter = (filterValue: string | null, selectionAction?: 'toggle' | null) => {
 		const url = new URL(window.location.href);
@@ -123,7 +207,16 @@
 				<p class="text-xs sm:text-base text-gray-600">Showing {images.length} of {total} maps</p>
 			</div>
 		</div>
-		<div class="flex items-center sm:flex sm:justify-end sm:mt-4">
+		<div class="flex items-center sm:flex sm:justify-end sm:mt-4 gap-2 w-full sm:w-auto">
+			<div class="w-full sm:w-64">
+				<input
+					type="search"
+					class="w-full text-xs sm:text-sm rounded-xs py-1 px-2 sm:p-2 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-sky-200"
+					placeholder="Search map title..."
+					value={searchQuery}
+					oninput={handleSearchInput}
+				/>
+			</div>
 			<button
 				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-1.5 sm:mr-2"
 				onclick={() => changeFilter('all')}
@@ -155,6 +248,10 @@
 		</div>
 	</div>
 
+	{#if searchError}
+		<p class="text-xs sm:text-sm text-red-600">{searchError}</p>
+	{/if}
+
 	<div
 		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-8"
 	>
@@ -175,7 +272,6 @@
 		{/each}
 	</div>
 </div>
-
 {#key resetCounter}
 	<InfiniteLoading on:infinite={handleScroll} spinner="spiral" />
 {/key}
