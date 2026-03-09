@@ -7,7 +7,7 @@
 
 	import type { GeoJSON } from 'geojson';
 
-	export let annotationPageUrl = '';
+	let { annotationPageUrl = '' }: { annotationPageUrl?: string } = $props();
 
 	let mapContainer: HTMLDivElement;
 	let map: maplibregl.Map;
@@ -79,8 +79,6 @@
 				}
 			});
 		}
-
-		console.log(features);
 
 		return {
 			type: 'FeatureCollection',

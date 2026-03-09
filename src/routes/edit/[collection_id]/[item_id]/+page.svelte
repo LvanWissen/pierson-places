@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import OpenSeadragon, { Viewer } from 'openseadragon';
+	import OpenSeadragon, { type Viewer } from 'openseadragon';
 
 	import { superForm } from 'sveltekit-superforms';
 	import { Field, Control, Label, FieldErrors } from 'formsnap';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
-	import { metaDataSchema } from './schema';
+	import { metaDataSchema } from '$lib/schema';
 	import type { PageData } from './$types';
 	import type { MetaData } from '$lib/types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	let map = data.map;
+	let map = $derived(data.map);
 
 	let container: HTMLDivElement;
 	let viewer: Viewer;
-	let tileSources: string[] = [map.iiifInfoUrl];
 
 	const form = superForm<MetaData>(data.form, {
 		dataType: 'json',
@@ -37,128 +36,125 @@
 			gestureSettingsMouse: {
 				clickToZoom: false
 			},
-			tileSources: tileSources
+			tileSources: [map.iiifInfoUrl]
 		});
-
-		console.log(viewer);
 	});
 </script>
 
-<div class="w-full flex flex-col md:flex-row min-h-screen">
-	<!-- Sidebar with metadata - Full width on small screens -->
-	<div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0">
-		<!-- Metadata -->
+<div class="w-full flex flex-col md:flex-row" style="min-height: calc(100vh - 3rem);">
+	<div
+		class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex flex-col justify-between mb-6 md:mb-0 border-r border-gray-200"
+	>
 		<form method="POST" use:enhance>
-			<div class="pt-8 pl-8 p-4 grow">
-				<h2 class="text-xl font-semibold text-gray-800">Edit</h2>
+			<div class="p-6 space-y-4">
+				<h2 class="text-xl font-semibold text-gray-800">Edit Metadata</h2>
 
 				<Field {form} name="name">
 					<Control>
 						{#snippet children({ props })}
-							<Label>Name</Label>
+							<Label class="block text-sm font-medium text-gray-700 mb-1">Name</Label>
 							<input
 								{...props}
 								type="text"
 								bind:value={$formData.name}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 block w-full border border-gray-300 rounded-md shadow-xs text-sm focus:ring-2 focus:ring-sky-200 focus:border-sky-400 outline-none transition-shadow"
 							/>
 						{/snippet}
 					</Control>
-					<FieldErrors />
+					<FieldErrors class="text-xs text-red-600 mt-1" />
 				</Field>
 
 				<Field {form} name="description">
 					<Control>
 						{#snippet children({ props })}
-							<Label>Description</Label>
+							<Label class="block text-sm font-medium text-gray-700 mb-1">Description</Label>
 							<textarea
 								{...props}
 								bind:value={$formData.description}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								rows="3"
+								class="p-2.5 block w-full border border-gray-300 rounded-md shadow-xs text-sm focus:ring-2 focus:ring-sky-200 focus:border-sky-400 outline-none transition-shadow"
 							></textarea>
 						{/snippet}
 					</Control>
-					<FieldErrors />
+					<FieldErrors class="text-xs text-red-600 mt-1" />
 				</Field>
 
 				<Field {form} name="publication.description">
 					<Control>
 						{#snippet children({ props })}
-							<Label>Publication Description</Label>
+							<Label class="block text-sm font-medium text-gray-700 mb-1"
+								>Publication Description</Label
+							>
 							<textarea
 								{...props}
 								bind:value={$formData.publication.description}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								rows="3"
+								class="p-2.5 block w-full border border-gray-300 rounded-md shadow-xs text-sm focus:ring-2 focus:ring-sky-200 focus:border-sky-400 outline-none transition-shadow"
 							></textarea>
 						{/snippet}
 					</Control>
-					<FieldErrors />
+					<FieldErrors class="text-xs text-red-600 mt-1" />
 				</Field>
 
 				<Field {form} name="publication.startDate">
 					<Control>
 						{#snippet children({ props })}
-							<Label>Publication Start Date:</Label>
+							<Label class="block text-sm font-medium text-gray-700 mb-1">Publication Year</Label>
 							<input
 								{...props}
 								type="text"
 								bind:value={$formData.publication.startDate}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								placeholder="e.g. 1882"
+								class="p-2.5 block w-full border border-gray-300 rounded-md shadow-xs text-sm focus:ring-2 focus:ring-sky-200 focus:border-sky-400 outline-none transition-shadow"
 							/>
 						{/snippet}
 					</Control>
-					<FieldErrors />
+					<FieldErrors class="text-xs text-red-600 mt-1" />
 				</Field>
 
 				<Field {form} name="publication.publishedBy">
 					<Control>
 						{#snippet children({ props })}
-							<Label>Published By</Label>
+							<Label class="block text-sm font-medium text-gray-700 mb-1">Published By</Label>
 							<input
 								{...props}
 								type="text"
 								bind:value={$formData.publication.publishedBy}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 block w-full border border-gray-300 rounded-md shadow-xs text-sm focus:ring-2 focus:ring-sky-200 focus:border-sky-400 outline-none transition-shadow"
 							/>
 						{/snippet}
 					</Control>
-					<FieldErrors />
+					<FieldErrors class="text-xs text-red-600 mt-1" />
 				</Field>
 
 				<Field {form} name="isPartOf">
 					<Control>
 						{#snippet children({ props })}
-							<Label>Is Part Of</Label>
+							<Label class="block text-sm font-medium text-gray-700 mb-1">Collection</Label>
 							<input
 								{...props}
 								type="text"
 								bind:value={$formData.isPartOf}
-								class="p-2.5 mt-1 block w-full border-gray-300 rounded-xs shadow-xs sm:text-sm focus:ring-sky-500 focus:border-sky-500"
+								class="p-2.5 block w-full border border-gray-300 rounded-md shadow-xs text-sm focus:ring-2 focus:ring-sky-200 focus:border-sky-400 outline-none transition-shadow"
 							/>
 						{/snippet}
 					</Control>
-					<FieldErrors />
+					<FieldErrors class="text-xs text-red-600 mt-1" />
 				</Field>
-
-				<!-- <div>
-				<code>
-					<pre>{JSON.stringify(map, null, 2)}</pre>
-				</code>
-			</div> -->
 			</div>
-			<!-- Save button at the bottom -->
-			<div class="p-4 flex justify-end mb-4">
+
+			<div class="p-6 pt-0">
 				<button
-					class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100"
+					type="submit"
+					class="w-full text-sm font-semibold rounded-md flex items-center justify-center py-2.5 px-4 transition-colors border border-sky-300 text-sky-700 bg-sky-50 hover:bg-sky-100 hover:border-sky-400"
 				>
-					Save
+					Save Changes
 				</button>
 			</div>
 		</form>
 	</div>
 
-	<!-- OSD viewer - Explicit height on small screens -->
-	<div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5 h-[50vh] md:h-screen">
+	<div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5 h-[50vh] md:h-[calc(100vh-3rem)]">
 		<div bind:this={container} class="h-full w-full bg-gray-100"></div>
 	</div>
 </div>

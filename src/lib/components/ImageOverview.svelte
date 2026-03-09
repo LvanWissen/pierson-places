@@ -1,62 +1,67 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Link, LoaderCircle, MapPinned, Search, SkipForward } from 'lucide-svelte';
 	import { browser } from '$app/environment';
 
-	export let collectionId: number;
-	export let itemId: number;
-	export let manifestId: string;
-
-	export let isGeoreferenced: number = 0;
-
-	let imageLoading: boolean = true;
-	export let iiifInfoUrl: string;
-
-	let showCopiedPopup: boolean = false;
-
-	// const viewUrl = `/view/${collectionId}/${itemId}`;
-	let viewUrl: string;
-	let georeferenceUrl: string;
-
-	$: viewUrl = resolve('/view/[collection_id]/[item_id]', {
-		collection_id: String(collectionId),
-		item_id: String(itemId)
-	});
-
-	$: georeferenceUrl = `https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`;
-
-	$: thumbnailUrl = iiifInfoUrl.endsWith('info.json')
-		? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
-		: iiifInfoUrl + '/full/!512,512/0/default.jpg';
-
-	export let title: string = 'Unknown';
-	export let date: string = 'Unknown';
-	export let displayLinksBottom: boolean = true;
-	export let displayLinksRight: boolean = false;
-
-	$: {
-		if (iiifInfoUrl === '') {
-			imageLoading = true;
-		} else {
-			if (browser) {
-				loadImage();
-			}
-		}
+	interface Props {
+		collectionId: number;
+		itemId: number;
+		manifestId: string;
+		isGeoreferenced?: number;
+		iiifInfoUrl: string;
+		title?: string;
+		date?: string;
+		displayLinksBottom?: boolean;
+		displayLinksRight?: boolean;
 	}
 
-	const loadImage = (): void => {
-		const image = new Image();
-		image.src = thumbnailUrl;
+	let {
+		collectionId,
+		itemId,
+		manifestId,
+		isGeoreferenced = 0,
+		iiifInfoUrl,
+		title = 'Unknown',
+		date = 'Unknown',
+		displayLinksBottom = true,
+		displayLinksRight = false
+	}: Props = $props();
 
-		image.onload = () => {
+	let imageLoading = $state(true);
+	let showCopiedPopup = $state(false);
+
+	let viewUrl = $derived(
+		resolve('/view/[collection_id]/[item_id]', {
+			collection_id: String(collectionId),
+			item_id: String(itemId)
+		})
+	);
+
+	let georeferenceUrl = $derived(
+		`https://editor.allmaps.org/#/mask?url=${encodeURIComponent(iiifInfoUrl)}`
+	);
+
+	let thumbnailUrl = $derived(
+		iiifInfoUrl.endsWith('info.json')
+			? iiifInfoUrl.slice(0, -9) + '/full/!512,512/0/default.jpg'
+			: iiifInfoUrl + '/full/!512,512/0/default.jpg'
+	);
+
+	const loadImage = (): void => {
+		const img = new window.Image();
+		img.src = thumbnailUrl;
+		img.onload = () => {
 			imageLoading = false;
 		};
 	};
 
-	onMount((): void => {
-		loadImage();
+	$effect(() => {
+		if (iiifInfoUrl === '') {
+			imageLoading = true;
+		} else if (browser) {
+			loadImage();
+		}
 	});
 </script>
 
@@ -83,16 +88,14 @@
 						class="text-xs font-semibold rounded-xs flex items-center justify-center p-1 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
 						href={viewUrl}
 						title="View this map"
-						target="_blank"
 					>
 						<Search class="ml-1" size="18" />
 					</a>
 
 					<div class="relative">
-						<a
+						<button
 							class="text-xs font-semibold rounded-xs flex items-center justify-center p-1.5 transition-transform hover:shadow-xs border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
-							href={manifestId}
-							on:click|preventDefault={() => {
+							onclick={() => {
 								navigator.clipboard.writeText(manifestId);
 								showCopiedPopup = true;
 								setTimeout(() => {
@@ -102,8 +105,7 @@
 							title={manifestId}
 						>
 							<Link size="18" />
-						</a>
-
+						</button>
 						{#if showCopiedPopup}
 							<div
 								class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-1.5 px-2 text-xs rounded-sm shadow-md z-50"
@@ -149,9 +151,8 @@
 
 					<MapPinned class="ml-1" size="20" />
 				</a>
-				<a
-					href={resolve('/overview')}
-					on:click|preventDefault={() => {
+				<button
+					onclick={() => {
 						imageLoading = true;
 						invalidateAll().then(() => loadImage());
 					}}
@@ -159,7 +160,7 @@
 				>
 					Next / Skip
 					<SkipForward class="ml-1" size="20" />
-				</a>
+				</button>
 			</div>
 		{/if}
 	</div>

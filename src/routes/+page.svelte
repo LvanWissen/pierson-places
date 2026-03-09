@@ -3,6 +3,7 @@
 	import Image from '$lib/components/ImageOverview.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { API_BASE } from '$lib/config';
 
 	const props = $props();
 	const data = $derived(props.data);
@@ -10,42 +11,28 @@
 	let collectionId = $derived(data.partOf);
 	let manifestId = $derived(data.manifestId);
 	let itemId = $derived(data.id);
-	let iiifInfoUrl = $derived(data.iiifInfoUrl);
+	let iiifInfoUrlOverride = $state<string | null>(null);
+	let iiifInfoUrl = $derived(iiifInfoUrlOverride ?? data.iiifInfoUrl);
 	let title = $derived(data.metadata?.name || 'Unknown Title');
 	let date = $derived(data.metadata?.publication.startDate || 'Unknown Date');
 	let isGeoreferenced = $derived(data.isGeoreferenced || 0);
 	let statistics = $derived(data.statistics || {});
-	let lastDataId = $derived(data.id);
 
-	$effect.pre(() => {
-		if (!data) return;
-
-		collectionId = data.partOf;
-		manifestId = data.manifestId;
-		itemId = data.id;
-		title = data.metadata?.name || 'Unknown Title';
-		date = data.metadata?.publication.startDate || 'Unknown Date';
-		isGeoreferenced = data.isGeoreferenced || 0;
-		statistics = data.statistics || {};
-
-		if (data.id !== lastDataId) {
-			lastDataId = data.id;
-			iiifInfoUrl = data.iiifInfoUrl;
-		}
+	// Reset override when data changes (after invalidateAll)
+	$effect(() => {
+		data;
+		iiifInfoUrlOverride = null;
 	});
 
 	const handleNotMap = async () => {
 		try {
-			iiifInfoUrl = '';
-			const response = await fetch(
-				`https://lvanwissen-piersonplaces.web.val.run/item/${itemId}/not-a-map`,
-				{
-					method: 'PATCH',
-					headers: {
-						'Content-Type': 'application/json'
-					}
+			iiifInfoUrlOverride = '';
+			const response = await fetch(`${API_BASE}/item/${itemId}/not-a-map`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
 				}
-			);
+			});
 
 			if (!response.ok) {
 				throw new Error('Failed to mark as not a map');
@@ -126,7 +113,7 @@
 
 				<div class="grid grid-cols-2 gap-2">
 					<div class="text-center p-1 bg-gray-50 rounded-sm">
-						<p class="text-xs text-gray-600">Georefereced Selected</p>
+						<p class="text-xs text-gray-600">Georeferenced Selected</p>
 						<a
 							href={`${resolve('/overview')}?selected=true&georeferenced=true`}
 							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"

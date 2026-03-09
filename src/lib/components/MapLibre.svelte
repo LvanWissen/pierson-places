@@ -4,7 +4,7 @@
 	import { WarpedMapLayer } from '@allmaps/maplibre';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 
-	export let annotationPageUrl: string;
+	let { annotationPageUrl }: { annotationPageUrl: string } = $props();
 
 	let mapContainer: HTMLDivElement;
 

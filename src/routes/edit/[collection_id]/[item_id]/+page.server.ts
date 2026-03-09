@@ -1,6 +1,6 @@
 import type { Actions } from '@sveltejs/kit';
 
-import { metaDataSchema } from './schema';
+import { metaDataSchema } from '$lib/schema';
 
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';

@@ -1,25 +1,26 @@
 import type { PageLoad } from './$types';
 import type { MapData, Statistics } from '$lib/types';
 import { checkAllmaps } from '$lib/utils';
+import { API_BASE } from '$lib/config';
 
 export const load: PageLoad = async ({ fetch }) => {
-	const res = await fetch('https://lvanwissen-piersonplaces.web.val.run/');
-	const resStatistics = await fetch('https://lvanwissen-piersonplaces.web.val.run/statistics');
+	const [res, resStatistics] = await Promise.all([
+		fetch(`${API_BASE}/`),
+		fetch(`${API_BASE}/statistics`)
+	]);
 
-	const mapData: MapData = await res.json();
-	const statistics: Statistics = await resStatistics.json();
+	const [mapData, statistics]: [MapData, Statistics] = await Promise.all([
+		res.json(),
+		resStatistics.json()
+	]);
 
-	console.log('Updating from page.ts');
-
+	// Check allmaps in the background — don't block page load
 	if (mapData.isGeoreferenced == 0) {
-		mapData.isGeoreferenced = await checkAllmaps({
-			fetch,
-			itemId: mapData.id,
-			iiifInfoUrl: mapData.iiifInfoUrl
+		checkAllmaps({ fetch, itemId: mapData.id, iiifInfoUrl: mapData.iiifInfoUrl }).then((result) => {
+			mapData.isGeoreferenced = result;
 		});
 	}
 
-	// Directly return the map data properties at the top level, with statistics as a separate property
 	return {
 		...mapData,
 		statistics

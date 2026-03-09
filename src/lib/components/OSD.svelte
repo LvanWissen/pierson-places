@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import OpenSeadragon, { Viewer } from 'openseadragon';
+	import OpenSeadragon, { type Viewer } from 'openseadragon';
 
-	export let iiifInfoUrl: string;
+	let { iiifInfoUrl }: { iiifInfoUrl: string } = $props();
 
 	let container: HTMLDivElement;
 	let viewer: Viewer;

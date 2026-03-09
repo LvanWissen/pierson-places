@@ -2,7 +2,6 @@
 	import InfiniteLoading from 'svelte-infinite-loading';
 	import Image from '$lib/components/ImageOverview.svelte';
 	import { loadData, searchData } from '$lib/utils';
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 
@@ -13,14 +12,19 @@
 
 	let offset = $state(0);
 	let searchQuery = $state('');
-	let isSearching = $state(false);
 	let searchError = $state<string | null>(null);
 	let searchRequestId = 0;
 	let hasInitializedSearch = $state(false);
 	const { data } = $props();
-	let images = $derived(data.items);
-	let total = $derived(data.total);
-	let lastData = $derived(data);
+	let images = $state<typeof data.items>([]);
+	let total = $state(0);
+
+	// Sync from load function data (initial load / browser navigation)
+	$effect(() => {
+		images = data.items;
+		total = data.total;
+		offset = 0;
+	});
 
 	$effect(() => {
 		const georeferencedParam = page.url.searchParams.get('georeferenced');
@@ -58,14 +62,18 @@
 		} else {
 			url.searchParams.delete('query');
 		}
-		const nextPath = `${resolve('/overview')}${url.search}`;
-		goto(nextPath, { replaceState: true, keepFocus: true });
+		history.replaceState(history.state, '', `${resolve('/overview')}${url.search}`);
 	};
+
+	let searchDebounceTimer: ReturnType<typeof setTimeout>;
 
 	const handleSearchInput = (event: Event) => {
 		const value = (event.currentTarget as HTMLInputElement).value;
-		searchQuery = value;
-		updateSearchParam(value.trim());
+		clearTimeout(searchDebounceTimer);
+		searchDebounceTimer = setTimeout(() => {
+			searchQuery = value;
+			updateSearchParam(value.trim());
+		}, 300);
 	};
 
 	const handleScroll = async ({
@@ -78,14 +86,12 @@
 			return;
 		}
 		offset += 10;
-		console.log('Loading more data', offset);
 
 		const newData = await loadData(offset, 10, georeferencedFilter, selectionFilter);
 		images = [...images, ...newData.items];
 		total = newData.total;
 
 		if (images.length >= total) {
-			console.log('All data loaded');
 			complete();
 		} else {
 			loaded();
@@ -102,7 +108,6 @@
 		}
 
 		if (!currentQuery) {
-			isSearching = false;
 			const requestId = ++searchRequestId;
 			(async () => {
 				try {
@@ -112,7 +117,7 @@
 					total = newData.total;
 					offset = 0;
 					resetCounter += 1;
-				} catch (error) {
+				} catch {
 					if (requestId !== searchRequestId) return;
 					searchError = 'Failed to load maps';
 					images = [];
@@ -123,7 +128,6 @@
 		}
 
 		const requestId = ++searchRequestId;
-		isSearching = true;
 		(async () => {
 			try {
 				const result = await searchData(currentQuery);
@@ -132,20 +136,16 @@
 				total = result.total;
 				offset = 0;
 				resetCounter += 1;
-			} catch (error) {
+			} catch {
 				if (requestId !== searchRequestId) return;
 				searchError = 'Failed to load search results';
 				images = [];
 				total = 0;
-			} finally {
-				if (requestId === searchRequestId) {
-					isSearching = false;
-				}
 			}
 		})();
 	});
 
-	const changeFilter = (filterValue: string | null, selectionAction?: 'toggle' | null) => {
+	const changeFilter = async (filterValue: string | null, selectionAction?: 'toggle' | null) => {
 		const url = new URL(window.location.href);
 
 		// Handle georeferenced filter
@@ -163,7 +163,7 @@
 				selectionFilter = null;
 				url.searchParams.delete('georeferenced');
 				url.searchParams.delete('selected');
-				selectionAction = null; // Don't process selection when "all" is clicked
+				selectionAction = null;
 			}
 		}
 
@@ -178,82 +178,80 @@
 			}
 		}
 
-		const nextPath = `${resolve('/overview')}${url.search}`;
-		goto(nextPath, { replaceState: true, keepFocus: true });
+		// Update URL without triggering SvelteKit's load function
+		history.replaceState(history.state, '', `${resolve('/overview')}${url.search}`);
 
-		// Reset and reload data
-		offset = -10;
-		images = [];
+		// Fetch data directly — no page reload
+		const newData = await loadData(0, 10, georeferencedFilter, selectionFilter);
+		images = newData.items;
+		total = newData.total;
+		offset = 0;
 		resetCounter += 1;
 	};
-
-	$effect.pre(() => {
-		if (!data || data === lastData) return;
-
-		lastData = data;
-		images = data.items;
-		total = data.total;
-		offset = 0;
-	});
 </script>
 
-<div class="flex flex-col items-center space-y-6 bg-gray-50 min-h-screen">
-	<div
-		class="w-full flex flex-row flex-wrap sm:flex-row justify-between items-center sticky top-0 bg-gray-50 z-20 p-3 sm:p-8 border-b shadow-xs"
-	>
-		<div class="flex items-center sm:block">
-			<div>
-				<h1 class="text-lg sm:text-2xl font-semibold text-gray-800">Maps Overview</h1>
-				<p class="text-xs sm:text-base text-gray-600">Showing {images.length} of {total} maps</p>
+<div class="flex flex-col items-center bg-gray-50 min-h-screen">
+	<div class="w-full bg-white border-b border-gray-200 shadow-xs sticky top-12 z-20">
+		<div class="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-center h-10 gap-3">
+			<span class="text-xs text-gray-400 shrink-0">
+				{images.length}/{total}
+			</span>
+
+			<input
+				type="search"
+				class="w-28 sm:w-44 text-xs sm:text-sm rounded-md py-1 px-2 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-sky-200"
+				placeholder="Search..."
+				value={searchQuery}
+				oninput={handleSearchInput}
+			/>
+
+			<div class="flex items-center gap-1 ml-auto shrink-0">
+				<button
+					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {filter ===
+					'all'
+						? 'text-gray-800 bg-gray-200 border-gray-300'
+						: 'text-gray-500 bg-white border-gray-200 hover:bg-gray-50'}"
+					onclick={() => changeFilter('all')}
+				>
+					All
+				</button>
+				<button
+					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {filter ===
+					'georeferenced'
+						? 'text-sky-700 bg-sky-100 border-sky-300'
+						: 'text-gray-500 bg-white border-gray-200 hover:bg-gray-50'}"
+					onclick={() => changeFilter(filter === 'georeferenced' ? 'all' : 'georeferenced')}
+				>
+					Georeferenced
+				</button>
+				<button
+					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {filter ===
+					'non-georeferenced'
+						? 'text-orange-700 bg-orange-100 border-orange-300'
+						: 'text-gray-500 bg-white border-gray-200 hover:bg-gray-50'}"
+					onclick={() => changeFilter(filter === 'non-georeferenced' ? 'all' : 'non-georeferenced')}
+				>
+					Not Georeferenced
+				</button>
+				<button
+					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {selectionFilter ===
+					1
+						? 'text-amber-700 bg-amber-100 border-amber-300'
+						: 'text-gray-500 bg-white border-gray-200 hover:bg-gray-50'}"
+					onclick={() => changeFilter(null, 'toggle')}
+				>
+					Selected
+				</button>
 			</div>
-		</div>
-		<div class="flex items-center sm:flex sm:justify-end sm:mt-4 gap-2 w-full sm:w-auto">
-			<div class="w-full sm:w-64">
-				<input
-					type="search"
-					class="w-full text-xs sm:text-sm rounded-xs py-1 px-2 sm:p-2 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-sky-200"
-					placeholder="Search map title..."
-					value={searchQuery}
-					oninput={handleSearchInput}
-				/>
-			</div>
-			<button
-				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100 mr-1.5 sm:mr-2"
-				onclick={() => changeFilter('all')}
-			>
-				<span class="hidden sm:inline">{filter === 'all' ? 'Showing all' : 'Show all'}</span>
-				<span class="sm:hidden">All</span>
-			</button>
-			<button
-				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-sky-600 hover:bg-sky-100 hover:border-sky-300 text-sky-600 bg-sky-100 mr-1.5 sm:mr-2"
-				onclick={() =>
-					changeFilter(filter === 'georeferenced' ? 'non-georeferenced' : 'georeferenced')}
-			>
-				<span class="hidden sm:inline">
-					{filter === 'georeferenced' ? 'Show Non-Georeferenced' : 'Show Georeferenced'}
-				</span>
-				<span class="sm:hidden">{filter === 'georeferenced' ? 'Non-Geo' : 'Geo'}</span>
-			</button>
-			<button
-				class="text-xs sm:text-sm font-medium sm:font-semibold rounded-xs py-1 px-2 sm:p-2 transition-transform hover:shadow-xs border hover:text-amber-600 hover:bg-amber-100 hover:border-amber-300 text-amber-600 bg-amber-100"
-				onclick={() => changeFilter(null, 'toggle')}
-			>
-				<span class="hidden sm:inline">
-					{selectionFilter === 1 ? 'Show Unselected' : 'Show Selected'}
-				</span>
-				<span class="sm:hidden">
-					{selectionFilter === 1 ? 'Unselected' : 'Selected'}
-				</span>
-			</button>
 		</div>
 	</div>
 
 	{#if searchError}
-		<p class="text-xs sm:text-sm text-red-600">{searchError}</p>
+		<p class="text-xs sm:text-sm text-red-600 mt-4">{searchError}</p>
 	{/if}
 
 	<div
-		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-8"
+		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-6"
 	>
 		{#each images as image (image.id)}
 			<div class="w-full">

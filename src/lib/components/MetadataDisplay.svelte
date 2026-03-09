@@ -5,24 +5,27 @@
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 
-	export let metadata: {
-		name: string;
-		description: string;
-		publication: {
+	interface Props {
+		metadata: {
+			name: string;
 			description: string;
-			startDate?: string;
-			publishedBy: string;
+			publication: {
+				description: string;
+				startDate?: string;
+				publishedBy: string;
+			};
+			isPartOf: string;
 		};
-		isPartOf: string;
-	};
+		isGeoreferenced: number;
+		annotationPageUrl: string;
+		georeferenceUrl: string;
+		editUrl: string;
+	}
 
-	export let isGeoreferenced: number;
-	export let annotationPageUrl: string;
-	export let georeferenceUrl: string;
-	export let editUrl: string;
+	let { metadata, isGeoreferenced, annotationPageUrl, georeferenceUrl, editUrl }: Props = $props();
 </script>
 
-<div class="pt-8 pl-8 pr-8 p-4 grow flex flex-col justify-between">
+<div class="p-6 grow flex flex-col justify-between">
 	<div>
 		<div class="mb-4">
 			<h3 class="font-medium text-sm text-gray-700">Name</h3>
@@ -78,7 +81,6 @@
 		<a
 			class="w-1/2 text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-center p-2 transition-transform hover:shadow-xs border hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 text-gray-600 bg-gray-100"
 			href={resolve(editUrl as Pathname)}
-			on:click|preventDefault={() => goto(resolve(editUrl as Pathname))}
 		>
 			Edit
 			<Edit class="ml-1" size="20" />

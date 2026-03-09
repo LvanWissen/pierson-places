@@ -1,4 +1,5 @@
 import type { MapData, MetaData } from '$lib/types';
+import { API_BASE } from '$lib/config';
 
 export const deaccent = (value: string) =>
 	value
@@ -16,7 +17,7 @@ export const loadData = async (
 	fetchFn: typeof fetch = fetch
 ) => {
 	const res = await fetchFn(
-		`https://lvanwissen-piersonplaces.web.val.run/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&isSelected=${isSelected}&orderBy=${orderBy}`
+		`${API_BASE}/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&isSelected=${isSelected}&orderBy=${orderBy}`
 	);
 
 	const data: { total: number; data: MapData[] } = await res.json();
@@ -31,15 +32,9 @@ export const searchData = async (query: string, fetchFn: typeof fetch = fetch) =
 		return { items: [], offset: 0, limit: 0, total: 0 };
 	}
 
-	const res = await fetchFn(
-		`https://lvanwissen-piersonplaces.web.val.run/search?query=${encodeURIComponent(
-			normalizedQuery
-		)}`
-	);
+	const res = await fetchFn(`${API_BASE}/search?query=${encodeURIComponent(normalizedQuery)}`);
 
 	const items: MapData[] = await res.json();
-
-	console.log('searchData', { query, normalizedQuery, items });
 
 	return {
 		items,
@@ -50,7 +45,7 @@ export const searchData = async (query: string, fetchFn: typeof fetch = fetch) =
 };
 
 export const updateData = async (id: number, data: MetaData) => {
-	const res = await fetch(`https://lvanwissen-piersonplaces.web.val.run/item/${id}/metadata`, {
+	const res = await fetch(`${API_BASE}/item/${id}/metadata`, {
 		method: 'PATCH',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(data)
@@ -72,15 +67,12 @@ const handleGeoreferenced = async ({
 	itemId: number;
 }) => {
 	try {
-		const response = await fetch(
-			`https://lvanwissen-piersonplaces.web.val.run/item/${itemId}/georeferenced`,
-			{
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json'
-				}
+		const response = await fetch(`${API_BASE}/item/${itemId}/georeferenced`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
 			}
-		);
+		});
 
 		if (!response.ok) {
 			throw new Error('Failed to update georeferenced status');
@@ -102,7 +94,6 @@ export const checkAllmaps = async ({
 	const res = await fetch(`https://annotations.allmaps.org/?url=${iiifInfoUrl}`);
 	const data = await res.json();
 
-	// if error key is present, the map is not georeferenced
 	if (data.error) {
 		return 0;
 	} else {
