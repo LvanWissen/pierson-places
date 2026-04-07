@@ -4,6 +4,7 @@
 	import { loadData, searchData } from '$lib/utils';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import { untrack } from 'svelte';
 
 	let filter = $state('all');
 	let georeferencedFilter = $state<number | null>(null);
@@ -50,7 +51,7 @@
 			selectionFilter = null;
 		}
 
-		if (queryParam !== searchQuery) {
+		if (queryParam !== untrack(() => searchQuery)) {
 			searchQuery = queryParam;
 		}
 	});
