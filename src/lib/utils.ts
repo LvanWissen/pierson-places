@@ -12,12 +12,13 @@ export const loadData = async (
 	offset = 0,
 	limit = 10,
 	isGeoreferenced: number | null = null,
-	isSelected: number | null = null,
+	isImpossibleMap: number | null = null,
+	isNotAMap: number | null = null,
 	orderBy = 'id',
 	fetchFn: typeof fetch = fetch
 ) => {
 	const res = await fetchFn(
-		`${API_BASE}/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&isSelected=${isSelected}&orderBy=${orderBy}`
+		`${API_BASE}/overview?offset=${offset}&limit=${limit}&isGeoreferenced=${isGeoreferenced}&isImpossibleMap=${isImpossibleMap === null ? '' : isImpossibleMap}&isNotAMap=${isNotAMap === null ? '' : isNotAMap}&orderBy=${orderBy}`
 	);
 
 	const data: { total: number; data: MapData[] } = await res.json();

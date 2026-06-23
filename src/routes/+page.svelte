@@ -137,26 +137,7 @@
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2 gap-2">
-					<div class="text-center p-1 bg-gray-50 rounded-sm">
-						<p class="text-xs text-gray-600">Georeferenced Selected</p>
-						<a
-							href={`${resolve('/overview')}?selected=true&georeferenced=true`}
-							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
-						>
-							{statistics.selected || 0}
-						</a>
-					</div>
-					<div class="text-center p-1 bg-gray-50 rounded-sm">
-						<p class="text-xs text-gray-600">Remaining Selected</p>
-						<a
-							href={`${resolve('/overview')}?selected=true&georeferenced=false`}
-							class="block text-xs md:text-sm font-bold text-amber-600 hover:underline"
-						>
-							{statistics.remainingSelected || 0}
-						</a>
-					</div>
-				</div>
+
 			</div>
 		</div>
 	</div>

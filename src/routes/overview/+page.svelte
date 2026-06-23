@@ -8,7 +8,8 @@
 
 	let filter = $state('all');
 	let georeferencedFilter = $state<number | null>(null);
-	let selectionFilter = $state<number | null>(null);
+	let impossibleFilter = $state<number | null>(null);
+	let notAMapFilter = $state<number | null>(null);
 	let resetCounter = $state(0);
 
 	let offset = $state(0);
@@ -29,7 +30,8 @@
 
 	$effect(() => {
 		const georeferencedParam = page.url.searchParams.get('georeferenced');
-		const selectedParam = page.url.searchParams.get('selected');
+		const impossibleParam = page.url.searchParams.get('impossible');
+		const notAMapParam = page.url.searchParams.get('notamap');
 		const queryParam = page.url.searchParams.get('query') ?? '';
 
 		if (georeferencedParam === 'true') {
@@ -43,12 +45,20 @@
 			georeferencedFilter = null;
 		}
 
-		if (selectedParam === 'true') {
-			selectionFilter = 1;
-		} else if (selectedParam === 'false') {
-			selectionFilter = 0;
+		if (impossibleParam === 'true') {
+			impossibleFilter = 1;
+		} else if (impossibleParam === 'false') {
+			impossibleFilter = 0;
 		} else {
-			selectionFilter = null;
+			impossibleFilter = null;
+		}
+
+		if (notAMapParam === 'true') {
+			notAMapFilter = 1;
+		} else if (notAMapParam === 'false') {
+			notAMapFilter = 0;
+		} else {
+			notAMapFilter = null;
 		}
 
 		if (queryParam !== untrack(() => searchQuery)) {
@@ -88,7 +98,7 @@
 		}
 		offset += 10;
 
-		const newData = await loadData(offset, 10, georeferencedFilter, selectionFilter);
+		const newData = await loadData(offset, 10, georeferencedFilter, impossibleFilter, notAMapFilter);
 		images = [...images, ...newData.items];
 		total = newData.total;
 
@@ -112,7 +122,7 @@
 			const requestId = ++searchRequestId;
 			(async () => {
 				try {
-					const newData = await loadData(0, 10, georeferencedFilter, selectionFilter);
+					const newData = await loadData(0, 10, georeferencedFilter, impossibleFilter, notAMapFilter);
 					if (requestId !== searchRequestId) return;
 					images = newData.items;
 					total = newData.total;
@@ -146,7 +156,11 @@
 		})();
 	});
 
-	const changeFilter = async (filterValue: string | null, selectionAction?: 'toggle' | null) => {
+	const changeFilter = async (
+		filterValue: string | null,
+		impossibleAction?: 'toggle' | null,
+		notAMapAction?: 'toggle' | null
+	) => {
 		const url = new URL(window.location.href);
 
 		// Handle georeferenced filter
@@ -161,21 +175,33 @@
 				url.searchParams.set('georeferenced', 'false');
 			} else if (filter === 'all') {
 				georeferencedFilter = null;
-				selectionFilter = null;
+				impossibleFilter = null;
+				notAMapFilter = null;
 				url.searchParams.delete('georeferenced');
-				url.searchParams.delete('selected');
-				selectionAction = null;
+				url.searchParams.delete('impossible');
+				url.searchParams.delete('notamap');
+				impossibleAction = null;
+				notAMapAction = null;
 			}
 		}
 
-		// Handle selection filter
-		if (selectionAction === 'toggle') {
-			if (selectionFilter === 1) {
-				selectionFilter = 0;
-				url.searchParams.set('selected', 'false');
+		if (impossibleAction === 'toggle') {
+			if (impossibleFilter === 1) {
+				impossibleFilter = 0;
+				url.searchParams.set('impossible', 'false');
 			} else {
-				selectionFilter = 1;
-				url.searchParams.set('selected', 'true');
+				impossibleFilter = 1;
+				url.searchParams.set('impossible', 'true');
+			}
+		}
+
+		if (notAMapAction === 'toggle') {
+			if (notAMapFilter === 1) {
+				notAMapFilter = 0;
+				url.searchParams.set('notamap', 'false');
+			} else {
+				notAMapFilter = 1;
+				url.searchParams.set('notamap', 'true');
 			}
 		}
 
@@ -183,7 +209,7 @@
 		history.replaceState(history.state, '', `${resolve('/overview')}${url.search}`);
 
 		// Fetch data directly — no page reload
-		const newData = await loadData(0, 10, georeferencedFilter, selectionFilter);
+		const newData = await loadData(0, 10, georeferencedFilter, impossibleFilter, notAMapFilter);
 		images = newData.items;
 		total = newData.total;
 		offset = 0;
@@ -235,13 +261,22 @@
 					Not Georeferenced
 				</button>
 				<button
-					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {selectionFilter ===
+					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {impossibleFilter ===
 					1
-						? 'text-amber-700 bg-amber-100 border-amber-300'
+						? 'text-red-700 bg-red-100 border-red-300'
 						: 'text-gray-500 bg-white border-gray-200 hover:bg-gray-50'}"
-					onclick={() => changeFilter(null, 'toggle')}
+					onclick={() => changeFilter(null, 'toggle', null)}
 				>
-					Selected
+					Impossible
+				</button>
+				<button
+					class="text-xs sm:text-sm font-medium rounded-md py-1 px-2 border transition-colors {notAMapFilter ===
+					1
+						? 'text-red-700 bg-red-100 border-red-300'
+						: 'text-gray-500 bg-white border-gray-200 hover:bg-gray-50'}"
+					onclick={() => changeFilter(null, null, 'toggle')}
+				>
+					Not a Map
 				</button>
 			</div>
 		</div>

@@ -13,13 +13,21 @@ export const load: PageLoad = async ({ url, fetch }) => {
 		georeferencedFilter = 0;
 	}
 
-	const selectionParam = url.searchParams.get('selected');
-	let selectionFilter: number | null = null;
-	if (selectionParam === 'true') {
-		selectionFilter = 1;
-	} else if (selectionParam === 'false') {
-		selectionFilter = 0;
+	const impossibleParam = url.searchParams.get('impossible');
+	let impossibleFilter: number | null = null;
+	if (impossibleParam === 'true') {
+		impossibleFilter = 1;
+	} else if (impossibleParam === 'false') {
+		impossibleFilter = 0;
 	}
 
-	return loadData(0, 10, georeferencedFilter, selectionFilter, 'id', fetch);
+	const notAMapParam = url.searchParams.get('notamap');
+	let notAMapFilter: number | null = null;
+	if (notAMapParam === 'true') {
+		notAMapFilter = 1;
+	} else if (notAMapParam === 'false') {
+		notAMapFilter = 0;
+	}
+
+	return loadData(0, 10, georeferencedFilter, impossibleFilter, notAMapFilter, 'id', fetch);
 };
