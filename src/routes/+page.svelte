@@ -43,6 +43,26 @@
 			console.error(error);
 		}
 	};
+
+	const handleImpossibleToGeoreference = async () => {
+		try {
+			iiifInfoUrlOverride = '';
+			const response = await fetch(`${API_BASE}/item/${itemId}/map-is-impossible`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to mark as impossible to georeference');
+			}
+
+			invalidateAll();
+		} catch (error) {
+			console.error(error);
+		}
+	};
 </script>
 
 <div
@@ -66,6 +86,12 @@
 			class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-red-600 hover:bg-red-100 hover:border-red-300 text-red-600 bg-red-100"
 			><CircleAlert class="mr-1" size="20" />
 			This is not a map!
+		</button>
+		<button
+			onclick={handleImpossibleToGeoreference}
+			class="text-xs lg:text-sm font-semibold rounded-xs flex items-center justify-between p-2 transition-transform hover:shadow-xs border hover:text-orange-600 hover:bg-orange-100 hover:border-orange-300 text-orange-600 bg-orange-100"
+			><CircleAlert class="mr-1" size="20" />
+			Impossible to georeference
 		</button>
 	</div>
 
